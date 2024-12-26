@@ -8,6 +8,7 @@ repository = "https://github.com/0xflux/wdk_mutex"
 documentation = "https://docs.rs/wdk-mutex"
 readme = "Readme.md"
 keywords = ["windows", "driver", "mutex", "kernel", "wdk"]
+description = "An idiomatic Rust mutex type for Windows kernel driver development."
 
 [package.metadata.wdk.driver-model]
 driver-type = "WDM"
