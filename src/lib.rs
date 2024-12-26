@@ -25,10 +25,9 @@
 //! 
 //! Tests have been conducted on public modules.
 //! 
-//! No tests are included in the crate. Tests have been conducted on 
-//! [another of my projects](https://github.com/0xflux/Sanctum/blob/main/driver/src/mutex_test.rs)
-//! in a dedicated test module; but a new repo
-//! will be created specifically for testing this crate which can be built as a driver.
+//! All tests are carried out at [wdk_mutex_tests](https://github.com/0xflux/wdk_mutex_tests), 
+//! a separate repository which is built as a driver to test all functionality of the `wdk-mutex` crate. If you wish to run the tests
+//! yourself, or contribute, please check that repository.
 //! 
 //! <section class="warning">
 //! As this crate integrates into the wdk ecosystem, Microsoft stipulate: This project is still in early stages of development and 

@@ -20,9 +20,9 @@ Kernel Driver development.
 
 As this crate integrates into the wdk ecosystem, Microsoft stipulate: This project is still in early stages of development and is not yet recommended for production use.
 
-Tests have been conducted on public modules, but are not included in the crate due to the complexity of 
-deploying kernel level tests. A new repo will be created specifically for testing this crate which 
-can be built as a driver.
+All tests are carried out at [wdk_mutex_tests](https://github.com/0xflux/wdk_mutex_tests), 
+a separate repository which is built as a driver to test all functionality of the `wdk-mutex` crate. If you wish to run the tests
+yourself, or contribute, please check that repository.
 
 This is licenced with an MIT Licence, conditions can be found in LICENCE in the crate GitHub repository.
 

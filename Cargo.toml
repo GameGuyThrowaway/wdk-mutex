@@ -1,6 +1,6 @@
 [package]
 name = "wdk-mutex"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2021"
 authors = ["Flux Sec <fluxsec@proton.me>"]
 license = "MIT"
