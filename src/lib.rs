@@ -40,6 +40,4 @@
 #![no_std]
 
 pub mod kmutex;
-// mod fast_mutex;
-
 pub mod errors;
