@@ -209,8 +209,8 @@ impl<T> KMutex<T> {
         if irql > APC_LEVEL as u8 {
             if cfg!(feature = "debug") {
                 println!("[wdk-mutex] [-] IRQL is too high to call .lock(). Current IRQL: {}", irql);
-                return Err(DriverMutexError::IrqlTooHigh);
             }
+            return Err(DriverMutexError::IrqlTooHigh);
         }
 
         // Discard the return value; the status code does not represent an error or contain information 
@@ -272,7 +272,7 @@ pub struct KMutexGuard<'a, T> {
     kmutex: &'a KMutex<T>,
 }
 
-impl<'a, T> Display for KMutexGuard<'a, T> 
+impl<T> Display for KMutexGuard<'_, T>
 where T: Display
 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -282,7 +282,7 @@ where T: Display
 }
 
 
-impl<'a, T> Deref for KMutexGuard<'a, T> {
+impl<T> Deref for KMutexGuard<'_, T> {
     type Target = T;
 
     fn deref(&self) -> &Self::Target {
@@ -291,7 +291,7 @@ impl<'a, T> Deref for KMutexGuard<'a, T> {
     }
 }
 
-impl<'a, T> DerefMut for KMutexGuard<'a, T> {
+impl<T> DerefMut for KMutexGuard<'_, T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         // SAFETY: Dereferencing the inner data is safe as RAII controls the memory allocations.
         // Mutable access is safe due to Self only being given out whilst a mutex is held from the
@@ -300,14 +300,14 @@ impl<'a, T> DerefMut for KMutexGuard<'a, T> {
     }
 }
 
-impl<'a, T> Drop for KMutexGuard<'a, T> {
+impl<T> Drop for KMutexGuard<'_, T> {
     fn drop(&mut self) {
         // NOT SAFE AT A IRQL TOO HIGH
         unsafe { KeReleaseMutex(&mut (*self.kmutex.inner).mutex, FALSE as u8) }; 
     }
 }
 
-impl<'a, T> KMutexGuard<'a, T> {
+impl<T> KMutexGuard<'_, T> {
     /// Safely drop the KMutexGuard, an alternative to RAII.
     /// 
     /// This function checks the IRQL before attempting to drop the guard. 
@@ -326,8 +326,8 @@ impl<'a, T> KMutexGuard<'a, T> {
         if irql > DISPATCH_LEVEL as u8 {
             if cfg!(feature = "debug") {
                 println!("[wdk-mutex] [-] Unable to safely drop the KMUTEX. Calling IRQL is too high: {}", irql);
-                return Err(DriverMutexError::IrqlTooHigh);
             }
+            return Err(DriverMutexError::IrqlTooHigh);
         }
 
         unsafe { KeReleaseMutex(&mut (*self.kmutex.inner).mutex, FALSE as u8) }; 
