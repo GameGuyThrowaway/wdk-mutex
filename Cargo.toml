@@ -1,11 +1,11 @@
 [package]
 name = "wdk-mutex"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 authors = ["Flux Sec <fluxsec@proton.me>"]
 license = "MIT"
 repository = "https://github.com/0xflux/wdk_mutex"
-documentation = "https://docs.rs/wdk-mutex"
+documentation = "https://0xflux.github.io/wdk-mutex"
 readme = "Readme.md"
 keywords = ["windows", "driver", "mutex", "kernel", "wdk"]
 description = "An idiomatic Rust mutex type for Windows kernel driver development."
