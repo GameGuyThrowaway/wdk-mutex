@@ -1,0 +1,2 @@
+cargo::rustc-check-cfg=cfg(nightly_toolchain)
+cargo::rustc-cfg=nightly_toolchain

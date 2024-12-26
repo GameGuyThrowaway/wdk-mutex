@@ -1,0 +1,11 @@
+C:\Users\ian\git\wdk_mutex\docs\debug\deps\libclap_cargo-5899f349778573af.rmeta: C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\lib.rs C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\features.rs C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\manifest.rs C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\workspace.rs C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\style.rs
+
+C:\Users\ian\git\wdk_mutex\docs\debug\deps\libclap_cargo-5899f349778573af.rlib: C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\lib.rs C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\features.rs C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\manifest.rs C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\workspace.rs C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\style.rs
+
+C:\Users\ian\git\wdk_mutex\docs\debug\deps\clap_cargo-5899f349778573af.d: C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\lib.rs C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\features.rs C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\manifest.rs C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\workspace.rs C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\style.rs
+
+C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\lib.rs:
+C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\features.rs:
+C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\manifest.rs:
+C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\workspace.rs:
+C:\Users\ian\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\clap-cargo-0.14.1\src\style.rs:
