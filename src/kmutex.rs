@@ -186,7 +186,8 @@ impl<T> KMutex<T> {
     /// 
     /// # Errors
     /// 
-    /// todo
+    /// If the IRQL is too high, this function will return an error and will not acquire a lock. To prevent
+    /// a kernel panic, the caller should match the return value rather than just unwrapping the value.
     /// 
     /// # IRQL
     /// 
@@ -196,6 +197,13 @@ impl<T> KMutex<T> {
     /// It is the callers responsibility to ensure the IRQL is sufficient to call this function and it
     /// will not alter the IRQL for the caller, as this may introduce undefined behaviour elsewhere in the 
     /// driver / kernel.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// let mtx = KMutex::new(0u32).unwrap();
+    /// let lock = mtx.lock().unwrap();
+    /// ```
     pub fn lock(&self) -> Result<KMutexGuard<'_, T>, DriverMutexError> {
 
         // Check the IRQL is <= APC_LEVEL as per remarks at
@@ -255,7 +263,7 @@ impl<T> Drop for KMutex<T> {
 /// DISPATCH_LEVEL if an alertable lock was acquired. It is the callers responsible to manage APC levels whilst
 /// using the KMutex.
 /// 
-/// If you wish to manually drop the lock with a safety check, call the function [`drop_safe`].
+/// If you wish to manually drop the lock with a safety check, call the function [`Self::drop_safe`].
 /// 
 /// # Kernel panic
 /// 
@@ -315,7 +323,7 @@ impl<'a, T> KMutexGuard<'a, T> {
     /// # IRQL
     /// 
     /// This function is safe to call at any IRQL, but it will not release the mutex if IRQL > DISPATCH_LEVEL
-    fn drop_safe(&mut self) -> Result<(), DriverMutexError> {
+    pub fn drop_safe(&mut self) -> Result<(), DriverMutexError> {
 
         let irql = unsafe {KeGetCurrentIrql()};
         if irql > DISPATCH_LEVEL as u8 {

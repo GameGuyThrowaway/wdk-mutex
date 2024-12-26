@@ -33,7 +33,7 @@
 //! 
 //! Tests have been conducted on public modules.
 //! 
-//! No tests are included in the crate. Tests have been conducted on another project https://github.com/0xflux/Sanctum; but a new repo
+//! No tests are included in the crate. Tests have been conducted on another project <https://github.com/0xflux/Sanctum>; but a new repo
 //! will be created specifically for testing this crate which can be built as a driver.
 //! 
 //! <section class="warning">
