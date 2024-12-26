@@ -45,9 +45,6 @@
 
 #![no_std]
 
-#[cfg(not(test))]
-extern crate wdk_panic;
-
 pub mod kmutex;
 // mod fast_mutex;
 

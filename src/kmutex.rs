@@ -1,8 +1,5 @@
 //! A Rust idiomatic Windows Kernel Driver KMUTEX type which protects the inner type T
 
-#[cfg(not(test))]
-extern crate wdk_panic;
-
 use core::{ffi::c_void, fmt::Display, ops::{Deref, DerefMut}, ptr::{self, drop_in_place, null_mut}};
 use wdk::println;
 use wdk_sys::{ntddk::{ExAllocatePool2, ExFreePool, KeGetCurrentIrql, KeInitializeMutex, KeReleaseMutex, KeWaitForSingleObject}, APC_LEVEL, DISPATCH_LEVEL, FALSE, KMUTEX, POOL_FLAG_NON_PAGED, _KWAIT_REASON::Executive, _MODE::KernelMode};
