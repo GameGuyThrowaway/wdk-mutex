@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["CommonBufferHardwareAccessMax","CommonBufferHardwareAccessReadOnly","CommonBufferHardwareAccessReadWrite","CommonBufferHardwareAccessWriteOnly"],"type":["Type"]};

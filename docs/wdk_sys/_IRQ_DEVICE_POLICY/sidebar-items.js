@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["IrqPolicyAllCloseProcessors","IrqPolicyAllProcessorsInMachine","IrqPolicyAllProcessorsInMachineWhenSteered","IrqPolicyMachineDefault","IrqPolicyOneCloseProcessor","IrqPolicySpecifiedProcessors","IrqPolicySpreadMessagesAcrossAllProcessors"],"type":["Type"]};

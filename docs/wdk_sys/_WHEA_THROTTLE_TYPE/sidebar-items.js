@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["WheaMemoryThrottle","WheaPcieThrottle"],"type":["Type"]};

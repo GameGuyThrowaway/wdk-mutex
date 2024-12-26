@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["PoolExtendedParameterInvalidType","PoolExtendedParameterMax","PoolExtendedParameterNumaNode","PoolExtendedParameterPriority","PoolExtendedParameterSecurePool"],"type":["Type"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["ArbiterActionAddReserved","ArbiterActionBootAllocation","ArbiterActionCommitAllocation","ArbiterActionQueryAllocatedResources","ArbiterActionQueryArbitrate","ArbiterActionQueryConflict","ArbiterActionRetestAllocation","ArbiterActionRollbackAllocation","ArbiterActionTestAllocation","ArbiterActionWriteReservedResources"],"type":["Type"]};

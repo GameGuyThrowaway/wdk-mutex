@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["ClfsMgmtPolicyAutoGrow","ClfsMgmtPolicyAutoShrink","ClfsMgmtPolicyGrowthRate","ClfsMgmtPolicyInvalid","ClfsMgmtPolicyLogTail","ClfsMgmtPolicyMaximumSize","ClfsMgmtPolicyMinimumSize","ClfsMgmtPolicyNewContainerExtension","ClfsMgmtPolicyNewContainerPrefix","ClfsMgmtPolicyNewContainerSize","ClfsMgmtPolicyNewContainerSuffix"],"type":["Type"]};

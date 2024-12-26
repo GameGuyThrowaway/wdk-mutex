@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["KdNameSpaceACPI","KdNameSpaceAny","KdNameSpaceMax","KdNameSpaceNone","KdNameSpacePCI"],"type":["Type"]};

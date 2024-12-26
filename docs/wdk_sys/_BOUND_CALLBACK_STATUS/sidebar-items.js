@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["BoundExceptionContinueSearch","BoundExceptionError","BoundExceptionHandled","BoundExceptionMaximum"],"type":["Type"]};

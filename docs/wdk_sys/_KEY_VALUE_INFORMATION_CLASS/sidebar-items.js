@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["KeyValueBasicInformation","KeyValueFullInformation","KeyValueFullInformationAlign64","KeyValueLayerInformation","KeyValuePartialInformation","KeyValuePartialInformationAlign64","MaxKeyValueInfoClass"],"type":["Type"]};

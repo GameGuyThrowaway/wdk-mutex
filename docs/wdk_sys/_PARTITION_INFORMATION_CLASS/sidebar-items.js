@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["SystemMemoryPartitionDedicatedMemoryInformation","SystemMemoryPartitionInformation","SystemMemoryPartitionOpenDedicatedMemory"],"type":["Type"]};

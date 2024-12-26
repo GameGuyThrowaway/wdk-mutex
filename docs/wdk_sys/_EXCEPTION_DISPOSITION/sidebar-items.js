@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["ExceptionCollidedUnwind","ExceptionContinueExecution","ExceptionContinueSearch","ExceptionNestedException"],"type":["Type"]};

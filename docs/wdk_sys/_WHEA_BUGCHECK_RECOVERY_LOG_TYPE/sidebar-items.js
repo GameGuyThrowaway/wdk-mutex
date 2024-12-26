@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["WheaEventBugCheckRecoveryEntry","WheaEventBugCheckRecoveryMax","WheaEventBugCheckRecoveryReturn"],"type":["Type"]};

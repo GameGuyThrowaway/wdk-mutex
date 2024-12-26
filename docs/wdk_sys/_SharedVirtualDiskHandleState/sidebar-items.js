@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["SharedVirtualDiskHandleStateFileShared","SharedVirtualDiskHandleStateHandleShared","SharedVirtualDiskHandleStateNone"],"type":["Type"]};

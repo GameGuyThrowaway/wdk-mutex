@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["DirectoryNotifyExtendedInformation","DirectoryNotifyFullInformation","DirectoryNotifyInformation","DirectoryNotifyMaximumInformation"],"type":["Type"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["EndAlternatives","NEC98x86","StandardDesign"],"type":["Type"]};

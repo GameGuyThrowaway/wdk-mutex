@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["PowerDeviceD0","PowerDeviceD1","PowerDeviceD2","PowerDeviceD3","PowerDeviceMaximum","PowerDeviceUnspecified"],"type":["Type"]};

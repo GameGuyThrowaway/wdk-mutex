@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["MmCached","MmHardwareCoherentCached","MmMaximumCacheType","MmNonCached","MmNonCachedUnordered","MmNotMapped","MmUSWCCached","MmWriteCombined"],"type":["Type"]};

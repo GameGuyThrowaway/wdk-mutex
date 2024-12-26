@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["SharedVirtualDiskCDPSnapshotsSupported","SharedVirtualDiskSnapshotsSupported","SharedVirtualDisksSupported","SharedVirtualDisksUnsupported"],"type":["Type"]};

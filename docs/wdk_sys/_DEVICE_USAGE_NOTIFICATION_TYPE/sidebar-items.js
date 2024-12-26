@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["DeviceUsageTypeBoot","DeviceUsageTypeDumpFile","DeviceUsageTypeGuestAssigned","DeviceUsageTypeHibernation","DeviceUsageTypePaging","DeviceUsageTypePostDisplay","DeviceUsageTypeUndefined"],"type":["Type"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["PlatformRoleAppliancePC","PlatformRoleDesktop","PlatformRoleEnterpriseServer","PlatformRoleMaximum","PlatformRoleMobile","PlatformRolePerformanceServer","PlatformRoleSOHOServer","PlatformRoleSlate","PlatformRoleUnspecified","PlatformRoleWorkstation"],"type":["Type"]};

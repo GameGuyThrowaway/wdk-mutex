@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["CriticalError","IgnoreError","NormalError","SevereError"],"type":["Type"]};

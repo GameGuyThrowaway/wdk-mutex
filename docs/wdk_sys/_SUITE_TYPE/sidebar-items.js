@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["BackOffice","Blade","CommunicationServer","ComputeServer","DataCenter","EmbeddedNT","EmbeddedRestricted","Enterprise","MaxSuiteType","MultiUserTS","Personal","PhoneNT","SecurityAppliance","SingleUserTS","SmallBusiness","SmallBusinessRestricted","StorageServer","TerminalServer","WHServer"],"type":["Type"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["TableEmptyTree","TableFoundNode","TableInsertAsLeft","TableInsertAsRight"],"type":["Type"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["PciExpressDownstreamSwitchPort","PciExpressEndpoint","PciExpressLegacyEndpoint","PciExpressRootComplexEventCollector","PciExpressRootComplexIntegratedEndpoint","PciExpressRootPort","PciExpressToPciXBridge","PciExpressUpstreamSwitchPort","PciXToExpressBridge"],"type":["Type"]};

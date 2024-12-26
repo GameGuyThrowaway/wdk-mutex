@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["ObjectBasicInformation","ObjectTypeInformation"],"type":["Type"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["IndicatorBlink","IndicatorOff","IndicatorOn"],"type":["Type"]};

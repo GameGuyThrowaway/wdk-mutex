@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["WheaRawDataFormatAMD64MCA","WheaRawDataFormatGeneric","WheaRawDataFormatIA32MCA","WheaRawDataFormatIPFSalRecord","WheaRawDataFormatIntel64MCA","WheaRawDataFormatMax","WheaRawDataFormatMemory","WheaRawDataFormatNMIPort","WheaRawDataFormatPCIExpress","WheaRawDataFormatPCIXBus","WheaRawDataFormatPCIXDevice"],"type":["Type"]};

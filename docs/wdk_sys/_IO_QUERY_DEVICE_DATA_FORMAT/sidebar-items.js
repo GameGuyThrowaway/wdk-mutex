@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["IoQueryDeviceComponentInformation","IoQueryDeviceConfigurationData","IoQueryDeviceIdentifier","IoQueryDeviceMaxData"],"type":["Type"]};

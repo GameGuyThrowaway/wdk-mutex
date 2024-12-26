@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["LocationTypeFileSystem","LocationTypeMaximum","LocationTypeRegistry"],"type":["Type"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["PowerOff","PowerOn"],"type":["Type"]};

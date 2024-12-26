@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["WheaCpuVendorAmd","WheaCpuVendorIntel","WheaCpuVendorOther"],"type":["Type"]};

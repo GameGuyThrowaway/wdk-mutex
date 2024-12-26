@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["PowerLimitBurst","PowerLimitContinuous","PowerLimitPreemptive","PowerLimitPreemptiveOffset","PowerLimitRapid","PowerLimitTypeMax"],"type":["Type"]};

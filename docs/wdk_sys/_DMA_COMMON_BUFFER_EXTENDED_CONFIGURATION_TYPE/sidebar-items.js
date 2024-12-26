@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["CommonBufferConfigTypeHardwareAccessPermissions","CommonBufferConfigTypeLogicalAddressLimits","CommonBufferConfigTypeMax","CommonBufferConfigTypeSubSection"],"type":["Type"]};

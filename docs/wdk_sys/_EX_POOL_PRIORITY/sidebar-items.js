@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["HighPoolPriority","HighPoolPrioritySpecialPoolOverrun","HighPoolPrioritySpecialPoolUnderrun","LowPoolPriority","LowPoolPrioritySpecialPoolOverrun","LowPoolPrioritySpecialPoolUnderrun","NormalPoolPriority","NormalPoolPrioritySpecialPoolOverrun","NormalPoolPrioritySpecialPoolUnderrun"],"type":["Type"]};

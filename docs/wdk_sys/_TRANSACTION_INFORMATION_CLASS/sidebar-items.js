@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["TransactionBasicInformation","TransactionEnlistmentInformation","TransactionPropertiesInformation","TransactionSuperiorEnlistmentInformation"],"type":["Type"]};

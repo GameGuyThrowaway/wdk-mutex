@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["RelationAll","RelationCache","RelationGroup","RelationNumaNode","RelationNumaNodeEx","RelationProcessorCore","RelationProcessorDie","RelationProcessorModule","RelationProcessorPackage"],"type":["Type"]};

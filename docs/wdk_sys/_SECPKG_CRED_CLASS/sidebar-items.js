@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["SecPkgCredClass_Ephemeral","SecPkgCredClass_Explicit","SecPkgCredClass_None","SecPkgCredClass_PersistedGeneric","SecPkgCredClass_PersistedSpecific"],"type":["Type"]};
