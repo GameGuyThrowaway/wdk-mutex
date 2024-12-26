@@ -1,0 +1,19 @@
+{
+    "cSpell.words": [
+        "alertable",
+        "cdylib",
+        "Irql",
+        "kmtx",
+        "kmutex",
+        "KMUTEXGUARD",
+        "KWAIT",
+        "ntddk",
+        "NTSTATUS",
+        "PCUNICODE",
+        "PDEVICE",
+        "PKMUTEX",
+        "println",
+        "PRKMUTEX",
+        "RAII"
+    ]
+}

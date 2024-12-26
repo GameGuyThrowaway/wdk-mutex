@@ -1,0 +1,38 @@
+[package]
+name = "wdk-mutex"
+version = "0.0.1"
+edition = "2021"
+authors = ["Flux Sec <fluxsec@proton.me>"]
+license = "MIT"
+repository = "https://github.com/0xflux/wdk_mutex"
+documentation = "https://docs.rs/wdk-mutex"
+readme = "Readme.md"
+keywords = ["windows", "driver", "mutex", "kernel", "wdk"]
+
+[package.metadata.wdk.driver-model]
+driver-type = "WDM"
+
+[lib]
+crate-type = ["lib"]
+
+[features]
+default = []
+nightly = ["wdk/nightly", "wdk-sys/nightly"]
+debug = []
+
+[dependencies]
+wdk = "^0.3.0"
+wdk-alloc = "^0.3.0"
+wdk-sys = "^0.3.0"
+wdk-panic = "^0.3.0"
+
+[profile.dev]
+panic = "abort"
+lto = true
+
+[profile.release]
+panic = "abort"
+lto = true
+
+[build-dependencies]
+wdk-build = "^0.3.0"
