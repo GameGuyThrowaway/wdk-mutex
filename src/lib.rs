@@ -1,13 +1,13 @@
 //! An idiomatic Rust mutex type for Windows kernel driver development. 
 //! 
 //! The crate will safely check IRQL before doing operations which would cause a STOP CODE of 
-//! IRQL NOT LESS OR EQUAL (except for RAII dropping of scoped Mutex Guards).
+//! IRQL NOT LESS OR EQUAL (**except for RAII dropping of scoped Mutex Guards**).
 //! In those cases, the API will return an error of the internal type `DriverMutexError`.
 //! 
 //! This crate is a work in progress to implement additional mutex types and functionality as required. Contributions, issues,
 //! and discussions are welcome.
 //! 
-//! This crate is **NOT** affiliated with the WDK crates provided by Microsoft, but is designed to work with them for Windows Rust Kernel Driver
+//! This crate is **not** affiliated with the WDK crates provided by Microsoft, but is designed to work with them for Windows Rust Kernel Driver
 //! development.
 //! 
 //! # Additional features:
@@ -16,24 +16,18 @@
 //! 
 //! # Planned updates
 //! 
-//! ## Global interface:
-//! 
-//! A future addition is planned which will make the API more flexible for dynamically managing globally available 
+//! - **Global interface**: A future addition is planned which will make the API more flexible for dynamically managing globally available 
 //! mutexes to somewhat reduce the overhead required to use this crate.
-//! 
-//! ## Critical Sections:
-//! 
-//! An idiomatic implementation for entering and leaving a mutex critical section where no underlying T is protected.
-//! 
-//! ## FAST_MUTEX
-//! 
-//! An idiomatic implementation for FAST_MUTEX.
+//! - **Critical Sections**: An idiomatic implementation for entering and leaving a mutex critical section where no underlying T is protected.
+//! - **FAST_MUTEX**:  An idiomatic implementation for FAST_MUTEX.
 //! 
 //! # Tests
 //! 
 //! Tests have been conducted on public modules.
 //! 
-//! No tests are included in the crate. Tests have been conducted on another project <https://github.com/0xflux/Sanctum>; but a new repo
+//! No tests are included in the crate. Tests have been conducted on 
+//! [another of my projects](https://github.com/0xflux/Sanctum/blob/main/driver/src/mutex_test.rs)
+//! in a dedicated test module; but a new repo
 //! will be created specifically for testing this crate which can be built as a driver.
 //! 
 //! <section class="warning">
