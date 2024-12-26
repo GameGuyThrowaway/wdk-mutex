@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["PowerUserInactive","PowerUserInvalid","PowerUserMaximum","PowerUserNotPresent","PowerUserPresent"],"type":["Type"]};

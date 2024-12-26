@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["PowerSystemHibernate","PowerSystemMaximum","PowerSystemShutdown","PowerSystemSleeping1","PowerSystemSleeping2","PowerSystemSleeping3","PowerSystemUnspecified","PowerSystemWorking"],"type":["Type"]};

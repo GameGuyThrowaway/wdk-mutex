@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["DomainConfigurationArm64","DomainConfigurationInvalid","DomainConfigurationX64"],"type":["Type"]};

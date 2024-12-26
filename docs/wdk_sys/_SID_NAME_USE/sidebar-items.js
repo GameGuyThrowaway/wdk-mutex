@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["SidTypeAlias","SidTypeComputer","SidTypeDeletedAccount","SidTypeDomain","SidTypeGroup","SidTypeInvalid","SidTypeLabel","SidTypeLogonSession","SidTypeUnknown","SidTypeUser","SidTypeWellKnownGroup"],"type":["Type"]};

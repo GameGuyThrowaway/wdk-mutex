@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["ErrorCorrected","ErrorFatal","ErrorOthers","ErrorRecoverable"],"type":["Type"]};

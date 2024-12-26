@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["SecurityAnonymous","SecurityDelegation","SecurityIdentification","SecurityImpersonation"],"type":["Type"]};

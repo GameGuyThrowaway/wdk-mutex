@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["IommuDeviceCreationConfigTypeAcpi","IommuDeviceCreationConfigTypeDeviceId","IommuDeviceCreationConfigTypeMax","IommuDeviceCreationConfigTypeNone","IommuDeviceCreationConfigTypePasid"],"type":["Type"]};

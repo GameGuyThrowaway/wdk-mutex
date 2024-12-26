@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["EqualTo","GreaterThan","LessThan"],"type":["Type"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["MaxSubsystemInformationType","SubsystemInformationTypeWSL","SubsystemInformationTypeWin32"],"type":["Type"]};

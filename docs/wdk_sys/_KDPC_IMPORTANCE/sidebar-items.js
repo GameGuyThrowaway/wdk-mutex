@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["HighImportance","LowImportance","MediumHighImportance","MediumImportance"],"type":["Type"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["InterruptActiveBoth","InterruptActiveBothTriggerHigh","InterruptActiveBothTriggerLow","InterruptActiveHigh","InterruptActiveLow","InterruptFallingEdge","InterruptPolarityUnknown","InterruptRisingEdge"],"type":["Type"]};

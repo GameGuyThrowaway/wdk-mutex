@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["PowerMonitorDim","PowerMonitorOff","PowerMonitorOn"],"type":["Type"]};

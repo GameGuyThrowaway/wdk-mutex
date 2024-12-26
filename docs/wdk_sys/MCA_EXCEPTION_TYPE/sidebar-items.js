@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["HAL_MCA_RECORD","HAL_MCE_RECORD"],"type":["Type"]};

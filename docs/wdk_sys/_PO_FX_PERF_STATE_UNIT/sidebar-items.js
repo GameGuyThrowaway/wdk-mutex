@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["PoFxPerfStateUnitBandwidth","PoFxPerfStateUnitFrequency","PoFxPerfStateUnitMaximum","PoFxPerfStateUnitOther"],"type":["Type"]};

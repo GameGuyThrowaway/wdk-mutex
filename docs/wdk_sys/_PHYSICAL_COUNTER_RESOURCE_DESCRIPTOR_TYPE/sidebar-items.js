@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["ResourceTypeEventBuffer","ResourceTypeExtendedCounterConfiguration","ResourceTypeIdenitificationTag","ResourceTypeMax","ResourceTypeOverflow","ResourceTypeRange","ResourceTypeSingle"],"type":["Type"]};

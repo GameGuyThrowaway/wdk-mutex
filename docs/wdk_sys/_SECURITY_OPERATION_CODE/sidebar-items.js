@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["AssignSecurityDescriptor","DeleteSecurityDescriptor","QuerySecurityDescriptor","SetSecurityDescriptor"],"type":["Type"]};

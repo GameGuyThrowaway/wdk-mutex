@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["ArbiterRequestHalReported","ArbiterRequestLegacyAssigned","ArbiterRequestLegacyReported","ArbiterRequestPnpDetected","ArbiterRequestPnpEnumerated","ArbiterRequestUndefined"],"type":["Type"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["LT_DONT_CARE","LT_LOWEST_LATENCY"],"type":["Type"]};

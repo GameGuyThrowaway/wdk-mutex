@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["PcwCallbackAddCounter","PcwCallbackCollectData","PcwCallbackEnumerateInstances","PcwCallbackRemoveCounter"],"type":["Type"]};

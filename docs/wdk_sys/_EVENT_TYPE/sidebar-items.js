@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["NotificationEvent","SynchronizationEvent"],"type":["Type"]};

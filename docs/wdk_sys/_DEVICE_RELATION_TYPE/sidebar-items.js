@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["BusRelations","EjectionRelations","PowerRelations","RemovalRelations","SingleBusRelations","TargetDeviceRelation","TransportRelations"],"type":["Type"]};

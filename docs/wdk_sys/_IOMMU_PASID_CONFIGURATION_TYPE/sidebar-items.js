@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["PasidConfigTypeDefaultPasidOnly","PasidConfigTypeMax","PasidConfigTypePasidTaggedDma"],"type":["Type"]};

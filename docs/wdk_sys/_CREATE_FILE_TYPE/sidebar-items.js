@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["CreateFileTypeMailslot","CreateFileTypeNamedPipe","CreateFileTypeNone"],"type":["Type"]};

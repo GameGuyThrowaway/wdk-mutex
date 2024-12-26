@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["ACPIBus","CBus","Eisa","InterfaceTypeUndefined","Internal","InternalPowerBus","Isa","MPIBus","MPSABus","MaximumInterfaceType","MicroChannel","NuBus","PCIBus","PCMCIABus","PNPBus","PNPISABus","ProcessorInternal","TurboChannel","VMEBus","Vmcs"],"type":["Type"]};

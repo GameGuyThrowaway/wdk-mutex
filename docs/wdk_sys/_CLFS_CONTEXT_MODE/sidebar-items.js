@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["ClfsContextForward","ClfsContextNone","ClfsContextPrevious","ClfsContextUndoNext"],"type":["Type"]};

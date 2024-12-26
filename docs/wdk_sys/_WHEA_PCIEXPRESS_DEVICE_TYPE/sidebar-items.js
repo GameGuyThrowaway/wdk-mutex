@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["WheaPciExpressDownstreamSwitchPort","WheaPciExpressEndpoint","WheaPciExpressLegacyEndpoint","WheaPciExpressRootComplexEventCollector","WheaPciExpressRootComplexIntegratedEndpoint","WheaPciExpressRootPort","WheaPciExpressToPciXBridge","WheaPciExpressUpstreamSwitchPort","WheaPciXToExpressBridge"],"type":["Type"]};

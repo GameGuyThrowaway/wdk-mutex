@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["Batch","CachedInteractive","CachedRemoteInteractive","CachedUnlock","Interactive","Network","NetworkCleartext","NewCredentials","Proxy","RemoteInteractive","Service","UndefinedLogonType","Unlock"],"type":["Type"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["TransactionManagerBasicInformation","TransactionManagerLogInformation","TransactionManagerLogPathInformation","TransactionManagerRecoveryInformation"],"type":["Type"]};

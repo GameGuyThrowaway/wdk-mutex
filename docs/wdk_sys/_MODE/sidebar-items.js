@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["KernelMode","MaximumMode","UserMode"],"type":["Type"]};

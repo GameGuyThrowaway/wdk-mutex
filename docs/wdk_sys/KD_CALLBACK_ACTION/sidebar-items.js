@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["KdConfigureDeviceAndContinue","KdConfigureDeviceAndStop","KdSkipDeviceAndContinue","KdSkipDeviceAndStop"],"type":["Type"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["MmLargeSystem","MmMediumSystem","MmSmallSystem"],"type":["Type"]};

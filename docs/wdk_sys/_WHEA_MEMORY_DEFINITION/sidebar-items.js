@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["WheaMemoryFm","WheaMemoryHbm","WheaMemoryMax","WheaMemoryNm","WheaMemoryUndefined"],"type":["Type"]};

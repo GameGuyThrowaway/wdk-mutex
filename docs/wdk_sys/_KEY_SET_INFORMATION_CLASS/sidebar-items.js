@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["KeyControlFlagsInformation","KeySetDebugInformation","KeySetHandleTagsInformation","KeySetLayerInformation","KeySetVirtualizationInformation","KeyWow64FlagsInformation","KeyWriteTimeInformation","MaxKeySetInfoClass"],"type":["Type"]};

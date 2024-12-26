@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["MonitorRequestTypeOff","MonitorRequestTypeOnAndPresent","MonitorRequestTypeToggleOn"],"type":["Type"]};

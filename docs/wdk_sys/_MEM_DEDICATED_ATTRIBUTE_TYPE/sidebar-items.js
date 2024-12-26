@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["MemDedicatedAttributeMax","MemDedicatedAttributeReadBandwidth","MemDedicatedAttributeReadLatency","MemDedicatedAttributeWriteBandwidth","MemDedicatedAttributeWriteLatency"],"type":["Type"]};

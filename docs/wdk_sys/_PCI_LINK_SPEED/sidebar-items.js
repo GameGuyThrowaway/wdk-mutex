@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["PciLinkSpeed16_0Gts","PciLinkSpeed2_5Gts","PciLinkSpeed32_0Gts","PciLinkSpeed5_0Gts","PciLinkSpeed64_0Gts","PciLinkSpeed8_0Gts","PciLinkSpeedMax"],"type":["Type"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["PoAc","PoConditionMaximum","PoDc","PoHot"],"type":["Type"]};

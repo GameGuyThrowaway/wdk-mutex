@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["SeImageSignatureCache","SeImageSignatureCatalogCached","SeImageSignatureCatalogHint","SeImageSignatureCatalogNotCached","SeImageSignatureEmbedded","SeImageSignatureNone","SeImageSignaturePackageCatalog","SeImageSignaturePplMitigated"],"type":["Type"]};

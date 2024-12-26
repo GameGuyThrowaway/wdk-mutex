@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["MemExtendedParameterAddressRequirements","MemExtendedParameterAttributeFlags","MemExtendedParameterImageMachine","MemExtendedParameterInvalidType","MemExtendedParameterMax","MemExtendedParameterNumaNode","MemExtendedParameterPartitionHandle","MemExtendedParameterUserPhysicalHandle"],"type":["Type"]};

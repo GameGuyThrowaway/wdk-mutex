@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["AdapterType","DriverType","FileSystemType","RecognizerType","Win32ServiceOwnProcess","Win32ServiceShareProcess"],"type":["Type"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["WheaRecoveryContextActionTakenMax","WheaRecoveryContextActionTakenNone","WheaRecoveryContextActionTakenOfflineDemotion","WheaRecoveryContextActionTakenPageNotReplaced","WheaRecoveryContextActionTakenPageReplaced"],"type":["Type"]};

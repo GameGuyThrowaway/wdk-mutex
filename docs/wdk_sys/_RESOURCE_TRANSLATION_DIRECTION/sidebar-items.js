@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["TranslateChildToParent","TranslateParentToChild"],"type":["Type"]};

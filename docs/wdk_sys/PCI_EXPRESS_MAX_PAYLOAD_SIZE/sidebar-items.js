@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["MaxPayload1024Bytes","MaxPayload128Bytes","MaxPayload2048Bytes","MaxPayload256Bytes","MaxPayload4096Bytes","MaxPayload512Bytes"],"type":["Type"]};

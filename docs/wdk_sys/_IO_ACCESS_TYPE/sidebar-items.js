@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["ModifyAccess","ReadAccess","WriteAccess"],"type":["Type"]};

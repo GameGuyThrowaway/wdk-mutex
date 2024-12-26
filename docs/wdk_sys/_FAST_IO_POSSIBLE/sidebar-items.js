@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["FastIoIsNotPossible","FastIoIsPossible","FastIoIsQuestionable"],"type":["Type"]};

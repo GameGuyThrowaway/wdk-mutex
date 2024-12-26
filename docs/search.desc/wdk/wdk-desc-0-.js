@@ -1,1 +1,0 @@
-searchState.loadedDescShard("wdk", 0, "Idiomatic Rust wrappers for the Windows Driver Kit (WDK) …\nTrigger a breakpoint in debugger via architecture-specific …\nEvaluates to TRUE if the return value specified by …\nprint to kernel debugger via <code>wdk_sys::ntddk::DbgPrint</code>\nprint with newline to debugger via <code>wdk_sys::ntddk::DbgPrint</code>")

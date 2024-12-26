@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["DeviceTextDescription","DeviceTextLocationInformation"],"type":["Type"]};

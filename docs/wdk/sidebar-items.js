@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":["dbg_break","nt_success"],"macro":["paged_code","print","println"]};

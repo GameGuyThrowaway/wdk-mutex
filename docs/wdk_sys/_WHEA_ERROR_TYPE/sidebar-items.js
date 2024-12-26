@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["WheaErrTypeGeneric","WheaErrTypeMemory","WheaErrTypeNMI","WheaErrTypePCIExpress","WheaErrTypePCIXBus","WheaErrTypePCIXDevice","WheaErrTypePmem","WheaErrTypeProcessor"],"type":["Type"]};

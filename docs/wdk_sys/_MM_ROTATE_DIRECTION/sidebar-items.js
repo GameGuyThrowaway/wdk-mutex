@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["MmMaximumRotateDirection","MmToFrameBuffer","MmToFrameBufferNoCopy","MmToRegularMemory","MmToRegularMemoryNoCopy"],"type":["Type"]};

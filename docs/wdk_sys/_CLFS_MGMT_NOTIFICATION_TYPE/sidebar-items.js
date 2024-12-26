@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["ClfsMgmtAdvanceTailNotification","ClfsMgmtLogFullHandlerNotification","ClfsMgmtLogUnpinnedNotification","ClfsMgmtLogWriteNotification"],"type":["Type"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["MandatoryLevelCount","MandatoryLevelHigh","MandatoryLevelLow","MandatoryLevelMedium","MandatoryLevelSecureProcess","MandatoryLevelSystem","MandatoryLevelUntrusted"],"type":["Type"]};

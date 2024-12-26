@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["FirmwareTypeBios","FirmwareTypeMax","FirmwareTypeUefi","FirmwareTypeUnknown"],"type":["Type"]};

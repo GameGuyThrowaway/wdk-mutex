@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["BadPageRange","ClosedPage","GetMemoryDetailsErr","IncorrectDdrVersion","InvalidData","NoMemoryForWrapper","NotDdr","RatFailure","RatFailureFirstCol","RatFailureLastCol","UnsupportedDdrVersion","WheaOfflineNoError"],"type":["Type"]};

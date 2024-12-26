@@ -1,9 +1,0 @@
-(function() {
-    var type_impls = Object.fromEntries([["wdk_sys",[["<details class=\"toggle implementors-toggle\" open><summary><section id=\"impl-Default-for-_SCATTER_GATHER_LIST\" class=\"impl\"><a class=\"src rightside\" href=\"src/wdk_sys/Users\\ian\\git\\wdk_mutex\\target\\debug\\build\\wdk-sys-ae64ad43ea68f55a\\out/types.rs.html#50152-50160\">Source</a><a href=\"#impl-Default-for-_SCATTER_GATHER_LIST\" class=\"anchor\">§</a><h3 class=\"code-header\">impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/default/trait.Default.html\" title=\"trait core::default::Default\">Default</a> for <a class=\"struct\" href=\"wdk_sys/struct._SCATTER_GATHER_LIST.html\" title=\"struct wdk_sys::_SCATTER_GATHER_LIST\">_SCATTER_GATHER_LIST</a></h3></section></summary><div class=\"impl-items\"><details class=\"toggle method-toggle\" open><summary><section id=\"method.default\" class=\"method trait-impl\"><a class=\"src rightside\" href=\"src/wdk_sys/Users\\ian\\git\\wdk_mutex\\target\\debug\\build\\wdk-sys-ae64ad43ea68f55a\\out/types.rs.html#50153-50159\">Source</a><a href=\"#method.default\" class=\"anchor\">§</a><h4 class=\"code-header\">fn <a href=\"https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default\" class=\"fn\">default</a>() -&gt; Self</h4></section></summary><div class='docblock'>Returns the “default value” for a type. <a href=\"https://doc.rust-lang.org/nightly/core/default/trait.Default.html#tymethod.default\">Read more</a></div></details></div></details>","Default","wdk_sys::types::bindings::SCATTER_GATHER_LIST"]]]]);
-    if (window.register_type_impls) {
-        window.register_type_impls(type_impls);
-    } else {
-        window.pending_type_impls = type_impls;
-    }
-})()
-//{"start":55,"fragment_lengths":[1535]}

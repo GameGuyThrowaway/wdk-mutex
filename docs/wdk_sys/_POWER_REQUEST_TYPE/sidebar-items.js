@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["PowerRequestAwayModeRequired","PowerRequestDisplayRequired","PowerRequestExecutionRequired","PowerRequestSystemRequired"],"type":["Type"]};

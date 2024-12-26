@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["DeviceDirectoryData"],"type":["Type"]};

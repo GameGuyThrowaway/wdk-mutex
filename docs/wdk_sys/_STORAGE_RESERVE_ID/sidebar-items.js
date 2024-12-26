@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["StorageReserveIdHard","StorageReserveIdMax","StorageReserveIdNone","StorageReserveIdSoft","StorageReserveIdUpdateScratch"],"type":["Type"]};

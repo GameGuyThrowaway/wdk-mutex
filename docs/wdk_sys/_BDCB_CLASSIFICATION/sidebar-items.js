@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["BdCbClassificationEnd","BdCbClassificationKnownBadImage","BdCbClassificationKnownBadImageBootCritical","BdCbClassificationKnownGoodImage","BdCbClassificationUnknownImage"],"type":["Type"]};

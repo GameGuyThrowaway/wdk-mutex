@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["OS_DEPLOYMENT_COMPACT","OS_DEPLOYMENT_STANDARD"],"type":["Type"]};

@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["EventCategoryDeviceInterfaceChange","EventCategoryHardwareProfileChange","EventCategoryKernelSoftRestart","EventCategoryReserved","EventCategoryTargetDeviceChange"],"type":["Type"]};

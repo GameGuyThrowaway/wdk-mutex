@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"constant":["KnownFolderDesktop","KnownFolderDocuments","KnownFolderDownloads","KnownFolderMax","KnownFolderMusic","KnownFolderNone","KnownFolderOther","KnownFolderPictures","KnownFolderVideos"],"type":["Type"]};
