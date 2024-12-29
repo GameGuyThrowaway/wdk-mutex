@@ -3,6 +3,9 @@
 use core::{ffi::c_void, fmt::Display, ops::{Deref, DerefMut}, ptr::{self, drop_in_place, null_mut}};
 use wdk::println;
 use wdk_sys::{ntddk::{ExAllocatePool2, ExFreePool, KeGetCurrentIrql, KeInitializeMutex, KeReleaseMutex, KeWaitForSingleObject}, APC_LEVEL, DISPATCH_LEVEL, FALSE, KMUTEX, POOL_FLAG_NON_PAGED, _KWAIT_REASON::Executive, _MODE::KernelMode};
+use alloc::boxed::Box;
+
+extern crate alloc;
 
 use crate::errors::DriverMutexError;
 /// A thread safe mutex implemented through acquiring a KMUTEX in the Windows kernel.
@@ -121,8 +124,8 @@ struct KMutexInner<T> {
     data: T,
 }
 
-
-unsafe impl<T: Sync> Sync for KMutex<T>{}
+unsafe impl<T> Sync for KMutex<T>{}
+unsafe impl<T> Send for KMutex<T>{}
 
 impl<T> KMutex<T> {
 
@@ -231,6 +234,69 @@ impl<T> KMutex<T> {
         Ok(KMutexGuard {
             kmutex: self
         })
+    }
+
+
+    /// Consumes the mutex and returns an owned copy of the protected data (`T`).
+    ///
+    /// This method performs a deep copy of the data (`T`) guarded by the mutex before
+    /// deallocating the internal memory. Be cautious when using this method with large
+    /// data types, as it may lead to inefficiencies or stack overflows.
+    ///
+    /// For scenarios involving large data that you prefer not to allocate on the stack,
+    /// consider using [`Self::to_owned_box`] instead.
+    ///
+    /// # Safety
+    ///
+    /// - **Single Ownership Guarantee:** After calling [`Self::to_owned`], ensure that
+    ///   no other references (especially static or global ones) attempt to access the
+    ///   underlying mutex. This is because the mutex's memory is deallocated once this
+    ///   method is invoked.
+    /// - **Exclusive Access:** This function should only be called when you can guarantee
+    ///   that there will be no further access to the protected `T`. Violating this can
+    ///   lead to undefined behavior since the memory is freed after the call.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// unsafe {
+    ///     let owned_data: T = mutex.to_owned();
+    ///     // Use `owned_data` safely here
+    /// }
+    /// ```
+    pub unsafe fn to_owned(self) -> T {
+        let data_read = unsafe { ptr::read(&(*self.inner).data) };
+        data_read
+    }
+
+    
+    /// Consumes the mutex and returns an owned `Box<T>` containing the protected data (`T`).
+    ///
+    /// This method is an alternative to [`Self::to_owned`] and is particularly useful when
+    /// dealing with large data types. By returning a `Box<T>`, the data is pool-allocated,
+    /// avoiding potential stack overflows associated with large stack allocations.
+    ///
+    /// # Safety
+    ///
+    /// - **Single Ownership Guarantee:** After calling [`Self::to_owned_box`], ensure that
+    /// no other references (especially static or global ones) attempt to access the
+    /// underlying mutex. This is because the mutex's memory is deallocated once this
+    /// method is invoked.
+    /// - **Exclusive Access:** This function should only be called when you can guarantee
+    /// that there will be no further access to the protected `T`. Violating this can
+    /// lead to undefined behavior since the memory is freed after the call.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// unsafe {
+    ///     let boxed_data: Box<T> = mutex.to_owned_box();
+    ///     // Use `boxed_data` safely here
+    /// }
+    /// ```
+    pub unsafe fn to_owned_box(self) -> Box<T> {
+        let data_read = unsafe { ptr::read(&(*self.inner).data) };
+        Box::new(data_read)
     }
 }
 
