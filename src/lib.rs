@@ -38,5 +38,14 @@
 
 #![no_std]
 
+//
+// Public modules
+//
 pub mod kmutex;
 pub mod errors;
+pub mod grt;
+
+//
+// Private modules
+//
+mod alloc;
