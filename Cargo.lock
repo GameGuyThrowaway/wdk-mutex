@@ -703,6 +703,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "wdk-alloc"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5dd1c139c6b9c05475bc7e8b356d4fbc252954d685691d70cfaec8b42c41b72d"
+dependencies = [
+ "tracing",
+ "tracing-subscriber",
+ "wdk-build",
+ "wdk-sys",
+]
+
+[[package]]
 name = "wdk-build"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -739,9 +751,10 @@ dependencies = [
 
 [[package]]
 name = "wdk-mutex"
-version = "0.0.3"
+version = "0.0.4"
 dependencies = [
  "wdk",
+ "wdk-alloc",
  "wdk-sys",
 ]
 

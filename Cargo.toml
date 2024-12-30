@@ -1,6 +1,6 @@
 [package]
 name = "wdk-mutex"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
 authors = ["Flux Sec <fluxsec@proton.me>"]
 license = "MIT"
@@ -24,6 +24,7 @@ debug = []
 [dependencies]
 wdk = "^0.3.0"
 wdk-sys = "^0.3.0"
+wdk-alloc = "^0.3.0"
 
 [profile.dev]
 panic = "abort"
