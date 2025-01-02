@@ -2,10 +2,13 @@
 
 use core::{alloc::GlobalAlloc, ptr::null_mut};
 
-use wdk_sys::{ntddk::{ExAllocatePool2, ExFreePool}, POOL_FLAG_NON_PAGED};
+use wdk_sys::{
+    ntddk::{ExAllocatePool2, ExFreePool},
+    POOL_FLAG_NON_PAGED,
+};
 
 /// Memory allocator used by the crate.
-/// 
+///
 /// SAFETY: This is safe IRQL <= DISPATCH_LEVEL
 pub struct KMAlloc;
 

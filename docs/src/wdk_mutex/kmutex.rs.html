@@ -401,96 +401,124 @@
 <a href="#400" id="400">400</a>
 <a href="#401" id="401">401</a>
 <a href="#402" id="402">402</a>
-<a href="#403" id="403">403</a></pre></div><pre class="rust"><code><span class="doccomment">//! A Rust idiomatic Windows Kernel Driver KMUTEX type which protects the inner type T
+<a href="#403" id="403">403</a>
+<a href="#404" id="404">404</a>
+<a href="#405" id="405">405</a>
+<a href="#406" id="406">406</a>
+<a href="#407" id="407">407</a>
+<a href="#408" id="408">408</a>
+<a href="#409" id="409">409</a>
+<a href="#410" id="410">410</a>
+<a href="#411" id="411">411</a>
+<a href="#412" id="412">412</a>
+<a href="#413" id="413">413</a>
+<a href="#414" id="414">414</a>
+<a href="#415" id="415">415</a>
+<a href="#416" id="416">416</a>
+<a href="#417" id="417">417</a>
+<a href="#418" id="418">418</a></pre></div><pre class="rust"><code><span class="doccomment">//! A Rust idiomatic Windows Kernel Driver KMUTEX type which protects the inner type T
 
-</span><span class="kw">use </span>core::{ffi::c_void, fmt::Display, ops::{Deref, DerefMut}, ptr::{<span class="self">self</span>, drop_in_place, null_mut}};
+</span><span class="kw">use </span>alloc::boxed::Box;
+<span class="kw">use </span>core::{
+    ffi::c_void,
+    fmt::Display,
+    ops::{Deref, DerefMut},
+    ptr::{<span class="self">self</span>, drop_in_place, null_mut},
+};
 <span class="kw">use </span>wdk::println;
-<span class="kw">use </span>wdk_sys::{ntddk::{ExAllocatePool2, ExFreePool, KeGetCurrentIrql, KeInitializeMutex, KeReleaseMutex, KeWaitForSingleObject}, APC_LEVEL, DISPATCH_LEVEL, FALSE, KMUTEX, POOL_FLAG_NON_PAGED, _KWAIT_REASON::Executive, _MODE::KernelMode};
-<span class="kw">use </span>alloc::boxed::Box;
+<span class="kw">use </span>wdk_sys::{
+    ntddk::{
+        ExAllocatePool2, ExFreePool, KeGetCurrentIrql, KeInitializeMutex, KeReleaseMutex,
+        KeWaitForSingleObject,
+    },
+    APC_LEVEL, DISPATCH_LEVEL, FALSE, KMUTEX, POOL_FLAG_NON_PAGED,
+    _KWAIT_REASON::Executive,
+    _MODE::KernelMode,
+};
 
 <span class="kw">extern crate </span>alloc;
 
 <span class="kw">use </span><span class="kw">crate</span>::errors::DriverMutexError;
 <span class="doccomment">/// A thread safe mutex implemented through acquiring a KMUTEX in the Windows kernel.
-/// 
-/// The type `Kmutex&lt;T&gt;` provides mutually exclusive access to the inner type T allocated through 
-/// this crate in the non-paged pool. All data required to initialise the KMutex is allocated in the 
+///
+/// The type `Kmutex&lt;T&gt;` provides mutually exclusive access to the inner type T allocated through
+/// this crate in the non-paged pool. All data required to initialise the KMutex is allocated in the
 /// non-paged pool and as such is safe to pass stack data into the type as it will not go out of scope.
-/// 
+///
 /// `KMutex` holds an inner value which is a pointer to a `KMutexInner` type which is the actual type
 /// allocated in the non-paged pool, and this holds information relating to the mutex.
-/// 
+///
 /// Access to the `T` within the `KMutex` can be done through calling [`Self::lock`].
-/// 
+///
 /// To receive debug messages when the IRQL is too high for an operation, enable the feature flag `debug`.
-/// 
+///
 /// # Lifetimes
-/// 
-/// As the `KMutex` is designed to be used in the Windows Kernel, with the Windows `wdk` crate, the lifetimes of 
+///
+/// As the `KMutex` is designed to be used in the Windows Kernel, with the Windows `wdk` crate, the lifetimes of
 /// the `KMutex` must be considered by the caller. See examples below for usage.
-/// 
+///
 /// The KMutex can exist in a locally scoped function with little additional configuration. To use the mutex across
-/// thread boundaries, or to use it in callback functions, the recommended course of action is to utilise either a 
-/// globally accessible `static AtomicPtr&lt;KMutex&lt;T&gt;&gt;`; or to utilise a 
-/// [Device Extension](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/device-extensions) 
+/// thread boundaries, or to use it in callback functions, the recommended course of action is to utilise either a
+/// globally accessible `static AtomicPtr&lt;KMutex&lt;T&gt;&gt;`; or to utilise a
+/// [Device Extension](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/device-extensions)
 /// provided in the wdk.
-/// 
+///
 /// &lt;section class="warning"&gt;
 /// If you use a `static AtomicPtr&lt;KMutex&lt;T&gt;&gt;` you MUST ensure that the memory is cleaned up when you exit the driver
 /// otherwise you cause a memory leak.
-/// 
-/// A future addition is planned which will make the API more flexible for dynamically managing globally available 
+///
+/// A future addition is planned which will make the API more flexible for dynamically managing globally available
 /// mutexes to somewhat reduce the overhead required to use this crate.
 /// &lt;/section&gt;
-/// 
+///
 /// # Deallocation
-/// 
+///
 /// KMutex handles the deallocation of resources at the point the KMutex is dropped.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ## Locally scoped mutex:
-/// 
+///
 /// ```
 /// {
 ///     let mtx = KMutex::new(0u32).unwrap();
 ///     let lock = mtx.lock().unwrap();
-/// 
+///
 ///     // If T implements display, you do not need to dereference the lock to print.
 ///     println!("The value is: {}", lock);
-/// } // Mutex will become unlocked as it is managed via RAII 
+/// } // Mutex will become unlocked as it is managed via RAII
 /// ```
-/// 
+///
 /// ## Global scope via static pointer:
-/// 
+///
 /// A future release is planned to make this process more ergonomic.
-/// 
+///
 /// ```
 /// pub static HEAP_MTX_PTR: AtomicPtr&lt;KMutex&lt;u32&gt;&gt; = AtomicPtr::new(null_mut());
-/// 
+///
 /// fn my_fn() {
 ///     let heap_mtx = Box::new(KMutex::new(0u32).unwrap());
 ///     let heap_mtx_ptr = Box::into_raw(heap_mtx);
 ///     HEAP_MTX_PTR.store(heap_mtx_ptr, Ordering::SeqCst);
-/// 
+///
 ///     // spawn some system threads
 ///     r _ in 0..3 {
 ///         let mut thread_handle: HANDLE = null_mut();
 ///         let status = unsafe {
 ///             PsCreateSystemThread(
-///                 &amp;mut thread_handle, 
-///                 0, 
-///                 null_mut::&lt;OBJECT_ATTRIBUTES&gt;(), 
+///                 &amp;mut thread_handle,
+///                 0,
+///                 null_mut::&lt;OBJECT_ATTRIBUTES&gt;(),
 ///                 null_mut(),
-///                 null_mut::&lt;CLIENT_ID&gt;(), 
-///                 Some(callback_fn), 
+///                 null_mut::&lt;CLIENT_ID&gt;(),
+///                 Some(callback_fn),
 ///                 null_mut(),
 ///             )
 ///         };
 ///         println!("[i] Thread status: {status}");
 ///     }
 /// }
-/// 
+///
 /// unsafe extern "C" fn callback_fn(_: *mut c_void) {
 ///     for _ in 0..50 {
 ///         let p = HEAP_MTX_PTR.load(Ordering::SeqCst);
@@ -503,7 +531,7 @@
 ///         }
 ///     }
 /// }
-/// 
+///
 /// // IMPORTANT ensure the KMutex in the static is properly dropped to clean memory
 /// extern "C" fn driver_exit(driver: *mut DRIVER_OBJECT) {
 ///     let ptr: *mut KMutex&lt;u32&gt; = HEAP_MTX_PTR.load(Ordering::SeqCst);
@@ -516,7 +544,7 @@
 /// }
 /// ```
 </span><span class="kw">pub struct </span>KMutex&lt;T&gt; {
-    inner: <span class="kw-2">*mut </span>KMutexInner&lt;T&gt;
+    inner: <span class="kw-2">*mut </span>KMutexInner&lt;T&gt;,
 }
 
 <span class="doccomment">/// The underlying data which is non-page pool allocated which is pointed to by the `KMutex`.
@@ -527,22 +555,21 @@
     </span>data: T,
 }
 
-<span class="kw">unsafe impl</span>&lt;T&gt; Sync <span class="kw">for </span>KMutex&lt;T&gt;{}
-<span class="kw">unsafe impl</span>&lt;T&gt; Send <span class="kw">for </span>KMutex&lt;T&gt;{}
+<span class="kw">unsafe impl</span>&lt;T&gt; Sync <span class="kw">for </span>KMutex&lt;T&gt; {}
+<span class="kw">unsafe impl</span>&lt;T&gt; Send <span class="kw">for </span>KMutex&lt;T&gt; {}
 
 <span class="kw">impl</span>&lt;T&gt; KMutex&lt;T&gt; {
-
     <span class="doccomment">/// Creates a new KMUTEX Windows Kernel Driver Mutex in a signaled (free) state.
-    /// 
+    ///
     /// # IRQL
-    /// 
+    ///
     /// This can be called at any IRQL.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use wdk_mutex::Mutex;
-    /// 
+    ///
     /// let my_mutex = wdk_mutex::KMutex::new(0u32);
     /// ```
     </span><span class="kw">pub fn </span>new(data: T) -&gt; <span class="prelude-ty">Result</span>&lt;<span class="self">Self</span>, DriverMutexError&gt; {
@@ -551,7 +578,11 @@
         //
         </span><span class="kw">let </span>total_sz_required = size_of::&lt;KMutexInner&lt;T&gt;&gt;();
         <span class="kw">let </span>inner_heap_ptr: <span class="kw-2">*mut </span>c_void = <span class="kw">unsafe </span>{
-            ExAllocatePool2(POOL_FLAG_NON_PAGED, total_sz_required <span class="kw">as </span>u64, u32::from_be_bytes(<span class="kw-2">*</span><span class="string">b"kmtx"</span>))
+            ExAllocatePool2(
+                POOL_FLAG_NON_PAGED,
+                total_sz_required <span class="kw">as </span>u64,
+                u32::from_be_bytes(<span class="kw-2">*</span><span class="string">b"kmtx"</span>),
+            )
         };
         <span class="kw">if </span>inner_heap_ptr.is_null() {
             <span class="kw">return </span><span class="prelude-val">Err</span>(DriverMutexError::PagedPoolAllocFailed);
@@ -564,10 +595,10 @@
         </span><span class="kw">unsafe </span>{
             ptr::write(
                 kmutex_inner_ptr,
-                KMutexInner { 
-                    mutex: KMUTEX::default(), 
-                    data
-                }
+                KMutexInner {
+                    mutex: KMUTEX::default(),
+                    data,
+                },
             );
 
             <span class="comment">// Initialise the KMUTEX object via the kernel
@@ -578,67 +609,66 @@
     }
 
 
-    <span class="doccomment">/// Acquires a mutex in a non-alertable manner. 
-    /// 
-    /// A future release is planned to include an alternate implementation 
+    <span class="doccomment">/// Acquires a mutex in a non-alertable manner.
+    ///
+    /// A future release is planned to include an alternate implementation
     /// which will lock the mutex and become alertable if it has to wait for the mutex to become free.
     /// This function will block the local thread until it is available to acquire the mutex.
-    /// 
-    /// Once the thread has acquired the mutex, it will return a `KMutexGuard` which is a RAII scoped 
+    ///
+    /// Once the thread has acquired the mutex, it will return a `KMutexGuard` which is a RAII scoped
     /// guard allowing exclusive access to the inner T.
-    /// 
+    ///
     /// # Errors
-    /// 
+    ///
     /// If the IRQL is too high, this function will return an error and will not acquire a lock. To prevent
     /// a kernel panic, the caller should match the return value rather than just unwrapping the value.
-    /// 
+    ///
     /// # IRQL
-    /// 
+    ///
     /// This function must be called at IRQL `&lt;= APC_LEVEL`, if the IRQL is higher than this,
     /// the function will return an error.
-    /// 
+    ///
     /// It is the callers responsibility to ensure the IRQL is sufficient to call this function and it
-    /// will not alter the IRQL for the caller, as this may introduce undefined behaviour elsewhere in the 
+    /// will not alter the IRQL for the caller, as this may introduce undefined behaviour elsewhere in the
     /// driver / kernel.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// let mtx = KMutex::new(0u32).unwrap();
     /// let lock = mtx.lock().unwrap();
     /// ```
     </span><span class="kw">pub fn </span>lock(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;KMutexGuard&lt;<span class="lifetime">'_</span>, T&gt;, DriverMutexError&gt; {
-
         <span class="comment">// Check the IRQL is &lt;= APC_LEVEL as per remarks at
         // https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-kewaitforsingleobject
-        </span><span class="kw">let </span>irql = <span class="kw">unsafe </span>{KeGetCurrentIrql()};
+        </span><span class="kw">let </span>irql = <span class="kw">unsafe </span>{ KeGetCurrentIrql() };
         <span class="kw">if </span>irql &gt; APC_LEVEL <span class="kw">as </span>u8 {
             <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">"debug"</span>) {
-                <span class="macro">println!</span>(<span class="string">"[wdk-mutex] [-] IRQL is too high to call .lock(). Current IRQL: {}"</span>, irql);
+                <span class="macro">println!</span>(
+                    <span class="string">"[wdk-mutex] [-] IRQL is too high to call .lock(). Current IRQL: {}"</span>,
+                    irql
+                );
             }
             <span class="kw">return </span><span class="prelude-val">Err</span>(DriverMutexError::IrqlTooHigh);
         }
 
-        <span class="comment">// Discard the return value; the status code does not represent an error or contain information 
+        <span class="comment">// Discard the return value; the status code does not represent an error or contain information
         // relevant to the context of no timeout.
-        </span><span class="kw">let _ </span>= <span class="kw">unsafe </span>{ 
+        </span><span class="kw">let _ </span>= <span class="kw">unsafe </span>{
             <span class="comment">// SAFETY: The IRQL is sufficient for the operation as checked above, and we know our pointer
             // is valid as RAII manages the lifetime of the heap allocation, ensuring it will only be deallocated
             // once Self gets dropped.
             </span>KeWaitForSingleObject(
                 <span class="kw-2">&amp;mut </span>(<span class="kw-2">*</span><span class="self">self</span>.inner).mutex <span class="kw">as </span><span class="kw-2">*mut </span><span class="kw">_ as </span><span class="kw-2">*mut </span><span class="kw">_</span>,
-                Executive, 
+                Executive,
                 KernelMode <span class="kw">as </span>i8,
-                FALSE <span class="kw">as </span>u8, 
+                FALSE <span class="kw">as </span>u8,
                 null_mut(),
-            ) 
+            )
         };
-         
-        <span class="prelude-val">Ok</span>(KMutexGuard {
-            kmutex: <span class="self">self
-        </span>})
-    }
 
+        <span class="prelude-val">Ok</span>(KMutexGuard { kmutex: <span class="self">self </span>})
+    }
 
     <span class="doccomment">/// Consumes the mutex and returns an owned copy of the protected data (`T`).
     ///
@@ -672,7 +702,7 @@
         data_read
     }
 
-    
+
     <span class="doccomment">/// Consumes the mutex and returns an owned `Box&lt;T&gt;` containing the protected data (`T`).
     ///
     /// This method is an alternative to [`Self::to_owned`] and is particularly useful when
@@ -704,10 +734,10 @@
 }
 
 <span class="kw">impl</span>&lt;T&gt; Drop <span class="kw">for </span>KMutex&lt;T&gt; {
-    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {       
+    <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="kw">unsafe </span>{
             <span class="comment">// Drop the underlying data and run destructors for the data, this would be relevant in the
-            // case where Self contains other heap allocated types which have their own deallocation 
+            // case where Self contains other heap allocated types which have their own deallocation
             // methods.
             </span>drop_in_place(<span class="kw-2">&amp;mut </span>(<span class="kw-2">*</span><span class="self">self</span>.inner).data);
 
@@ -720,19 +750,19 @@
 
 <span class="doccomment">/// A RAII scoped guard for the inner data protected by the mutex. Once this guard is given out, the protected data
 /// may be safely mutated by the caller as we guarantee exclusive access via Windows Kernel Mutex primitives.
-/// 
+///
 /// When this structure is dropped (falls out of scope), the lock will be unlocked.
-/// 
+///
 /// # IRQL
-/// 
-/// Access to the data within this guard must be done at &lt;= APC_LEVEL if a non-alertable lock was acquired, or &lt;= 
+///
+/// Access to the data within this guard must be done at &lt;= APC_LEVEL if a non-alertable lock was acquired, or &lt;=
 /// DISPATCH_LEVEL if an alertable lock was acquired. It is the callers responsible to manage APC levels whilst
 /// using the KMutex.
-/// 
+///
 /// If you wish to manually drop the lock with a safety check, call the function [`Self::drop_safe`].
-/// 
+///
 /// # Kernel panic
-/// 
+///
 /// Raising the IRQL above safe limits whilst using the mutex will cause a Kernel Panic if not appropriately handled.
 /// When RAII drops this type, the mutex is released, if the mutex goes out of scope whilst you hold an IRQL that
 /// is too high, you will receive a kernel panic.
@@ -742,7 +772,8 @@
 }
 
 <span class="kw">impl</span>&lt;T&gt; Display <span class="kw">for </span>KMutexGuard&lt;<span class="lifetime">'_</span>, T&gt;
-<span class="kw">where </span>T: Display
+<span class="kw">where
+    </span>T: Display,
 {
     <span class="kw">fn </span>fmt(<span class="kw-2">&amp;</span><span class="self">self</span>, f: <span class="kw-2">&amp;mut </span>core::fmt::Formatter&lt;<span class="lifetime">'_</span>&gt;) -&gt; core::fmt::Result {
         <span class="comment">// SAFETY: Dereferencing the inner data is safe as RAII controls the memory allocations.
@@ -772,26 +803,25 @@
 <span class="kw">impl</span>&lt;T&gt; Drop <span class="kw">for </span>KMutexGuard&lt;<span class="lifetime">'_</span>, T&gt; {
     <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="comment">// NOT SAFE AT A IRQL TOO HIGH
-        </span><span class="kw">unsafe </span>{ KeReleaseMutex(<span class="kw-2">&amp;mut </span>(<span class="kw-2">*</span><span class="self">self</span>.kmutex.inner).mutex, FALSE <span class="kw">as </span>u8) }; 
+        </span><span class="kw">unsafe </span>{ KeReleaseMutex(<span class="kw-2">&amp;mut </span>(<span class="kw-2">*</span><span class="self">self</span>.kmutex.inner).mutex, FALSE <span class="kw">as </span>u8) };
     }
 }
 
 <span class="kw">impl</span>&lt;T&gt; KMutexGuard&lt;<span class="lifetime">'_</span>, T&gt; {
     <span class="doccomment">/// Safely drop the KMutexGuard, an alternative to RAII.
-    /// 
-    /// This function checks the IRQL before attempting to drop the guard. 
-    /// 
+    ///
+    /// This function checks the IRQL before attempting to drop the guard.
+    ///
     /// # Errors
-    /// 
-    /// If the IRQL &gt; DISPATCH_LEVEL, no unlock will occur and a DriverMutexError will be returned to the 
+    ///
+    /// If the IRQL &gt; DISPATCH_LEVEL, no unlock will occur and a DriverMutexError will be returned to the
     /// caller.
-    /// 
+    ///
     /// # IRQL
-    /// 
+    ///
     /// This function is safe to call at any IRQL, but it will not release the mutex if IRQL &gt; DISPATCH_LEVEL
     </span><span class="kw">pub fn </span>drop_safe(<span class="kw-2">&amp;mut </span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;(), DriverMutexError&gt; {
-
-        <span class="kw">let </span>irql = <span class="kw">unsafe </span>{KeGetCurrentIrql()};
+        <span class="kw">let </span>irql = <span class="kw">unsafe </span>{ KeGetCurrentIrql() };
         <span class="kw">if </span>irql &gt; DISPATCH_LEVEL <span class="kw">as </span>u8 {
             <span class="kw">if </span><span class="macro">cfg!</span>(feature = <span class="string">"debug"</span>) {
                 <span class="macro">println!</span>(<span class="string">"[wdk-mutex] [-] Unable to safely drop the KMUTEX. Calling IRQL is too high: {}"</span>, irql);
@@ -799,7 +829,7 @@
             <span class="kw">return </span><span class="prelude-val">Err</span>(DriverMutexError::IrqlTooHigh);
         }
 
-        <span class="kw">unsafe </span>{ KeReleaseMutex(<span class="kw-2">&amp;mut </span>(<span class="kw-2">*</span><span class="self">self</span>.kmutex.inner).mutex, FALSE <span class="kw">as </span>u8) }; 
+        <span class="kw">unsafe </span>{ KeReleaseMutex(<span class="kw-2">&amp;mut </span>(<span class="kw-2">*</span><span class="self">self</span>.kmutex.inner).mutex, FALSE <span class="kw">as </span>u8) };
 
         <span class="prelude-val">Ok</span>(())
     }

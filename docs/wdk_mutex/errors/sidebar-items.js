@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["DriverMutexError"]};
+window.SIDEBAR_ITEMS = {"enum":["DriverMutexError","GrtError"]};
