@@ -6,3 +6,14 @@ pub enum DriverMutexError {
     IrqlNotAPCLevel,
     PagedPoolAllocFailed,
 }
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum GrtError {
+    GrtAlreadyExists,
+    GrtIsNull,
+    GrtIsEmpty,
+    KeyNotFound,
+    KeyExists,
+    DowncastError,
+    DriverMutexError(DriverMutexError),
+}
