@@ -17,7 +17,6 @@
 //! # Planned updates
 //!
 //! - **Critical Sections**: An idiomatic implementation for entering and leaving a mutex critical section where no underlying T is protected.
-//! - **FAST_MUTEX**:  An idiomatic implementation for FAST_MUTEX.
 //!
 //! # Tests
 //!
@@ -42,6 +41,7 @@
 pub mod errors;
 pub mod grt;
 pub mod kmutex;
+pub mod fast_mutex;
 
 //
 // Private modules

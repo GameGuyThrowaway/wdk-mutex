@@ -39,19 +39,9 @@ use crate::errors::DriverMutexError;
 /// As the `KMutex` is designed to be used in the Windows Kernel, with the Windows `wdk` crate, the lifetimes of
 /// the `KMutex` must be considered by the caller. See examples below for usage.
 ///
-/// The KMutex can exist in a locally scoped function with little additional configuration. To use the mutex across
-/// thread boundaries, or to use it in callback functions, the recommended course of action is to utilise either a
-/// globally accessible `static AtomicPtr<KMutex<T>>`; or to utilise a
-/// [Device Extension](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/device-extensions)
-/// provided in the wdk.
-///
-/// <section class="warning">
-/// If you use a `static AtomicPtr<KMutex<T>>` you MUST ensure that the memory is cleaned up when you exit the driver
-/// otherwise you cause a memory leak.
-///
-/// A future addition is planned which will make the API more flexible for dynamically managing globally available
-/// mutexes to somewhat reduce the overhead required to use this crate.
-/// </section>
+/// The `KMutex` can exist in a locally scoped function with little additional configuration. To use the mutex across
+/// thread boundaries, or to use it in callback functions, you can use the `Grt` module found in this crate. See below for 
+/// details.
 ///
 /// # Deallocation
 ///
@@ -71,58 +61,48 @@ use crate::errors::DriverMutexError;
 /// } // Mutex will become unlocked as it is managed via RAII
 /// ```
 ///
-/// ## Global scope via static pointer:
-///
-/// A future release is planned to make this process more ergonomic.
+/// ## Global scope via the `Grt` module in `wdk-mutex`:
 ///
 /// ```
-/// pub static HEAP_MTX_PTR: AtomicPtr<KMutex<u32>> = AtomicPtr::new(null_mut());
-///
-/// fn my_fn() {
-///     let heap_mtx = Box::new(KMutex::new(0u32).unwrap());
-///     let heap_mtx_ptr = Box::into_raw(heap_mtx);
-///     HEAP_MTX_PTR.store(heap_mtx_ptr, Ordering::SeqCst);
-///
-///     // spawn some system threads
-///     r _ in 0..3 {
-///         let mut thread_handle: HANDLE = null_mut();
-///         let status = unsafe {
-///             PsCreateSystemThread(
-///                 &mut thread_handle,
-///                 0,
-///                 null_mut::<OBJECT_ATTRIBUTES>(),
-///                 null_mut(),
-///                 null_mut::<CLIENT_ID>(),
-///                 Some(callback_fn),
-///                 null_mut(),
-///             )
-///         };
-///         println!("[i] Thread status: {status}");
+/// // Initialise the mutex on DriverEntry
+/// 
+/// #[export_name = "DriverEntry"]
+/// pub unsafe extern "system" fn driver_entry(
+///     driver: &mut DRIVER_OBJECT,
+///     registry_path: PCUNICODE_STRING,
+/// ) -> NTSTATUS {
+///     if let Err(e) = Grt::init() {
+///         println!("Error creating Grt!: {:?}", e);
+///         return STATUS_UNSUCCESSFUL;
 ///     }
+/// 
+///     // ...
+///     my_function();
 /// }
-///
-/// unsafe extern "C" fn callback_fn(_: *mut c_void) {
-///     for _ in 0..50 {
-///         let p = HEAP_MTX_PTR.load(Ordering::SeqCst);
-///         if !p.is_null() {
-///             let p = unsafe { &*p };
-///             let mut lock = p.lock().unwrap();
-///             println!("Got the lock before change! {}", *lock);
-///             *lock += 1;
-///             println!("After the change: {}", *lock);
-///         }
+/// 
+/// 
+/// // Register a new Mutex in the `Grt` of value 0u32:
+/// 
+/// pub fn my_function() {
+///     Grt::register_mutex("my_test_mutex", 0u32);
+/// }
+/// 
+/// unsafe extern "C" fn my_thread_fn_pointer(_: *mut c_void) {
+///     let my_mutex = Grt::get_kmutex::<u32>("my_test_mutex");
+///     if let Err(e) = my_mut {
+///         println!("Error in thread: {:?}", e);
+///         return;
 ///     }
+/// 
+///     let mut lock = my_mutex.unwrap().lock().unwrap();
+///     *lock += 1;
 /// }
-///
-/// // IMPORTANT ensure the KMutex in the static is properly dropped to clean memory
+/// 
+/// 
+/// // Destroy the Grt to prevent memory leak on DriverExit
+/// 
 /// extern "C" fn driver_exit(driver: *mut DRIVER_OBJECT) {
-///     let ptr: *mut KMutex<u32> = HEAP_MTX_PTR.load(Ordering::SeqCst);
-///     if !ptr.is_null() {
-///         unsafe {
-///             // RAII will kick in here to deallocate our memory
-///             let _ = Box::from_raw(ptr);
-///         }
-///     }
+///     unsafe {Grt::destroy()};
 /// }
 /// ```
 pub struct KMutex<T> {
@@ -193,10 +173,6 @@ impl<T> KMutex<T> {
 
     /// Acquires a mutex in a non-alertable manner.
     ///
-    /// A future release is planned to include an alternate implementation
-    /// which will lock the mutex and become alertable if it has to wait for the mutex to become free.
-    /// This function will block the local thread until it is available to acquire the mutex.
-    ///
     /// Once the thread has acquired the mutex, it will return a `KMutexGuard` which is a RAII scoped
     /// guard allowing exclusive access to the inner T.
     ///
@@ -225,12 +201,6 @@ impl<T> KMutex<T> {
         // https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-kewaitforsingleobject
         let irql = unsafe { KeGetCurrentIrql() };
         if irql > APC_LEVEL as u8 {
-            if cfg!(feature = "debug") {
-                println!(
-                    "[wdk-mutex] [-] IRQL is too high to call .lock(). Current IRQL: {}",
-                    irql
-                );
-            }
             return Err(DriverMutexError::IrqlTooHigh);
         }
 
