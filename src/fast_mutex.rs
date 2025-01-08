@@ -7,7 +7,6 @@ use core::{
     ops::{Deref, DerefMut},
     ptr::{self, drop_in_place},
 };
-use wdk::println;
 use wdk_sys::{
     ntddk::{
         ExAcquireFastMutex, ExAllocatePool2, ExFreePool, ExReleaseFastMutex, KeGetCurrentIrql, KeInitializeEvent
@@ -18,11 +17,14 @@ extern crate alloc;
 
 use crate::errors::DriverMutexError;
 
+/// An internal binding for the ExInitializeFastMutex routine. 
+/// 
+/// # Safety
+/// 
+/// This function does not check the IRQL as the only place this function is used is in an area where the IRQL
+/// is already checked.
 #[allow(non_snake_case)]
 unsafe fn ExInitializeFastMutex(fast_mutex: *mut FAST_MUTEX) {
-    // check IRQL
-    let irql = unsafe { KeGetCurrentIrql() };
-    assert!(irql as u32 <= DISPATCH_LEVEL);
 
     core::ptr::write_volatile(&mut (*fast_mutex).Count, FM_LOCK_BIT as i32);
 
@@ -42,8 +44,6 @@ unsafe fn ExInitializeFastMutex(fast_mutex: *mut FAST_MUTEX) {
 /// allocated in the non-paged pool, and this holds information relating to the mutex.
 ///
 /// Access to the `T` within the `FastMutex` can be done through calling [`Self::lock`].
-///
-/// To receive debug messages when the IRQL is too high for an operation, enable the feature flag `debug`.
 ///
 /// # Lifetimes
 ///
@@ -95,12 +95,12 @@ unsafe fn ExInitializeFastMutex(fast_mutex: *mut FAST_MUTEX) {
 /// // Register a new Mutex in the `Grt` of value 0u32:
 /// 
 /// pub fn my_function() {
-///     Grt::register_mutex("my_test_mutex", 0u32);
+///     Grt::register_fast_mutex("my_test_mutex", 0u32);
 /// }
 /// 
 /// unsafe extern "C" fn my_thread_fn_pointer(_: *mut c_void) {
-///     let my_mutex = Grt::get_kmutex::<u32>("my_test_mutex");
-///     if let Err(e) = my_mut {
+///     let my_mutex = Grt::get_fast_mutex::<u32>("my_test_mutex");
+///     if let Err(e) = my_mutex {
 ///         println!("Error in thread: {:?}", e);
 ///         return;
 ///     }
@@ -143,7 +143,7 @@ impl<T> FastMutex<T> {
     /// ```
     /// use wdk_mutex::Mutex;
     ///
-    /// let my_mutex = wdk_mutex::KMutex::new(0u32);
+    /// let my_mutex = wdk_mutex::FastMutex::new(0u32);
     /// ```
     pub fn new(data: T) -> Result<Self, DriverMutexError> {
         // This can only be called at a level <= DISPATCH_LEVEL; check current IRQL
@@ -188,7 +188,7 @@ impl<T> FastMutex<T> {
     }
 
 
-    /// Acquires the mutex.
+    /// Acquires the mutex, raising the IRQL to `APC_LEVEL`.
     ///
     /// Once the thread has acquired the mutex, it will return a `FastMutexGuard` which is a RAII scoped
     /// guard allowing exclusive access to the inner T.
@@ -210,7 +210,7 @@ impl<T> FastMutex<T> {
     /// # Examples
     ///
     /// ```
-    /// let mtx = KMutex::new(0u32).unwrap();
+    /// let mtx = FastMutex::new(0u32).unwrap();
     /// let lock = mtx.lock().unwrap();
     /// ```
     pub fn lock(&self) -> Result<FastMutexGuard<'_, T>, DriverMutexError> {
@@ -227,13 +227,63 @@ impl<T> FastMutex<T> {
         Ok(FastMutexGuard { fast_mutex: self })
     }
 
-    // todo docs
+    /// Consumes the mutex and returns an owned copy of the protected data (`T`).
+    ///
+    /// This method performs a deep copy of the data (`T`) guarded by the mutex before
+    /// deallocating the internal memory. Be cautious when using this method with large
+    /// data types, as it may lead to inefficiencies or stack overflows.
+    ///
+    /// For scenarios involving large data that you prefer not to allocate on the stack,
+    /// consider using [`Self::to_owned_box`] instead.
+    ///
+    /// # Safety
+    ///
+    /// - **Single Ownership Guarantee:** After calling [`Self::to_owned`], ensure that
+    ///   no other references (especially static or global ones) attempt to access the
+    ///   underlying mutex. This is because the mutexes memory is deallocated once this
+    ///   method is invoked.
+    /// - **Exclusive Access:** This function should only be called when you can guarantee
+    ///   that there will be no further access to the protected `T`. Violating this can
+    ///   lead to undefined behavior since the memory is freed after the call.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// unsafe {
+    ///     let owned_data: T = mutex.to_owned();
+    ///     // Use `owned_data` safely here
+    /// }
+    /// ```
     pub unsafe fn to_owned(self) -> T {
         let data_read = unsafe { ptr::read(&(*self.inner).data) };
         data_read
     }
 
-    // todo docs
+    
+    /// Consumes the mutex and returns an owned `Box<T>` containing the protected data (`T`).
+    ///
+    /// This method is an alternative to [`Self::to_owned`] and is particularly useful when
+    /// dealing with large data types. By returning a `Box<T>`, the data is pool-allocated,
+    /// avoiding potential stack overflows associated with large stack allocations.
+    ///
+    /// # Safety
+    ///
+    /// - **Single Ownership Guarantee:** After calling [`Self::to_owned_box`], ensure that
+    /// no other references (especially static or global ones) attempt to access the
+    /// underlying mutex. This is because the mutexes memory is deallocated once this
+    /// method is invoked.
+    /// - **Exclusive Access:** This function should only be called when you can guarantee
+    /// that there will be no further access to the protected `T`. Violating this can
+    /// lead to undefined behavior since the memory is freed after the call.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// unsafe {
+    ///     let boxed_data: Box<T> = mutex.to_owned_box();
+    ///     // Use `boxed_data` safely here
+    /// }
+    /// ```
     pub unsafe fn to_owned_box(self) -> Box<T> {
         let data_read = unsafe { ptr::read(&(*self.inner).data) };
         Box::new(data_read)
@@ -255,7 +305,23 @@ impl<T> Drop for FastMutex<T> {
 }
 
 
-// todo docs
+/// A RAII scoped guard for the inner data protected by the mutex. Once this guard is given out, the protected data
+/// may be safely mutated by the caller as we guarantee exclusive access via Windows Kernel Mutex primitives.
+///
+/// When this structure is dropped (falls out of scope), the lock will be unlocked.
+///
+/// # IRQL
+///
+/// Access to the data within this guard must be done at `APC_LEVEL` It is the callers responsible to 
+/// manage IRQL whilst using the `FastMutex`. On calling [`FastMutex::lock`], the IRQL will automatically
+/// be raised to `APC_LEVEL`.
+///
+/// If you wish to manually drop the lock with a safety check, call the function [`Self::drop_safe`].
+///
+/// # Kernel panic
+///
+/// Raising the IRQL above safe limits whilst using the mutex will cause a Kernel Panic if not appropriately handled.
+///
 pub struct FastMutexGuard<'a, T> {
     fast_mutex: &'a FastMutex<T>,
 }
@@ -291,19 +357,27 @@ impl<T> DerefMut for FastMutexGuard<'_, T> {
 
 impl<T> Drop for FastMutexGuard<'_, T> {
     fn drop(&mut self) {
-        // NOT SAFE AT A IRQL TOO HIGH
+        // NOT SAFE AT AN INVALID IRQL
         unsafe { ExReleaseFastMutex(&mut (*self.fast_mutex.inner).mutex) }; 
     }
 }
 
 impl<T> FastMutexGuard<'_, T> {
-    // todo docs
+    /// Safely drop the `FastMutexGuard`, an alternative to RAII.
+    ///
+    /// This function checks the IRQL before attempting to drop the guard.
+    ///
+    /// # Errors
+    ///
+    /// If the IRQL != `APC_LEVEL`, no unlock will occur and a DriverMutexError will be returned to the
+    /// caller.
+    ///
+    /// # IRQL
+    ///
+    /// This function must be called at `APC_LEVEL`
     pub fn drop_safe(&mut self) -> Result<(), DriverMutexError> {
         let irql = unsafe { KeGetCurrentIrql() };
-        if irql > DISPATCH_LEVEL as u8 {
-            if cfg!(feature = "debug") {
-                println!("[wdk-mutex] [-] Unable to safely drop the KMUTEX. Calling IRQL is too high: {}", irql);
-            }
+        if irql != APC_LEVEL as u8 {
             return Err(DriverMutexError::IrqlTooHigh);
         }
 

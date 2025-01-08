@@ -30,8 +30,8 @@ This is licenced with an MIT Licence, conditions can be found in LICENCE in the 
 
 **Global mutex tracking:**
 
-The `wdk-mutex` crate allows you to easily create, track, and use Mutex's for a Windows Kernel Driver across all threads and 
-callbacks. This improves developer ergonomics in creating, tracking, dropping etc Mutex's throughout your drivers codebase. 
+The `wdk-mutex` crate allows you to easily create, track, and use mutexes for a Windows Kernel Driver across all threads and 
+callbacks. This improves developer ergonomics in creating, tracking, dropping etc mutexes throughout your drivers codebase. 
 
 To use it, the `Grt` (Global Reference Tracker) module will allocate a safe reference tracker, allowing you to then register a `T` to be protected by a Mutex. This
 registration takes a `&'static str` which is the key for the Mutex object. At runtime, you are able to safely retrieve the mutex and operate
@@ -51,6 +51,10 @@ Access to the `T` within the `KMutex` can be done through calling `lock`, simila
 As the `KMutex` is designed to be used in the Windows Kernel, with the Windows `wdk` crate, the lifetimes of 
 the `KMutex` must be considered by the caller. See **examples** below for usage.
 
+**FAST_MUTEX:** 
+
+As well as a `KMUTEX`, `wdk-mutex` also supports the use of acquiring a [FAST_MUTEX](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/eprocess). Locking a FAST_MUTEX is faster than locking a `KMUTEX`.
+
 # Examples
 
 ## Locally scoped mutex:
@@ -67,7 +71,7 @@ the `KMutex` must be considered by the caller. See **examples** below for usage.
 
 ## Global scope via wdk-mutex Grt:
 
-To use Mutex's across your driver at runtime with ease:
+To use mutexes across your driver at runtime with ease:
 
 ```rust
 // Initialise the mutex on DriverEntry
@@ -90,12 +94,12 @@ pub unsafe extern "system" fn driver_entry(
 // Register a new Mutex in the `Grt` of value 0u32:
 
 pub fn my_function() {
-    Grt::register_mutex("my_test_mutex", 0u32);
+    Grt::register_fast_mutex("my_test_mutex", 0u32);
 }
 
 unsafe extern "C" fn my_thread_fn_pointer(_: *mut c_void) {
-    let my_mutex = Grt::get_kmutex::<u32>("my_test_mutex");
-    if let Err(e) = my_mut {
+    let my_mutex = Grt::get_fast_mutex::<u32>("my_test_mutex");
+    if let Err(e) = my_mutex {
         println!("Error in thread: {:?}", e);
         return;
     }
@@ -126,13 +130,3 @@ been conducted.
 
 An idiomatic implementation for entering and leaving a mutex critical section where no underlying 
 T is protected.
-
-## FAST_MUTEX
-
-An idiomatic implementation for FAST_MUTEX.
-
-The next planned release will add Critical Section behaviour, where you do not want to wrap a generic T in a mutex (similar to std::mutex), but you want a section to be a critical section nonetheless.
-
-Please note that each planned feature will be introduced gradually, and might undergo changes based on community feedback. 
-
-I welcome any contributions or suggestions to improve functionality, documentation, and compatibility.

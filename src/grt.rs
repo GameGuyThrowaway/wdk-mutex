@@ -6,7 +6,7 @@ extern crate alloc;
 
 use core::{any::Any, ptr::null_mut, sync::atomic::{AtomicPtr, Ordering::SeqCst}};
 use alloc::{boxed::Box, collections::BTreeMap};
-use crate::{errors::GrtError, kmutex::KMutex};
+use crate::{errors::GrtError, fast_mutex::FastMutex, kmutex::KMutex};
 
 
 // A static which points to an initialised box containing the `Grt`
@@ -18,15 +18,15 @@ static WDK_MTX_GRT_PTR: AtomicPtr<Grt> = AtomicPtr::new(null_mut());
 /// 
 /// The `Grt` abstraction makes it safe to register mutex objects and to retrieve them from callbacks and threads
 /// at runtime in the driver, with idiomatic error handling. The `Grt` makes several pool allocations which are tracked
-/// and managed safely via RAII, so if absolute minimal speed is required for accessing mutex's, you may wish to profile this
-/// vs a manual implementation of tracking mutex's however you see fit.
+/// and managed safely via RAII, so if absolute minimal speed is required for accessing mutexes, you may wish to profile this
+/// vs a manual implementation of tracking mutexes however you see fit.
 /// 
 /// The general way to use this, is to call [`Self::init`] during driver initialisation **once**, and on driver exit to call
 /// [`Self::destroy`] **once**. In between calling `init` and `destroy`, you may add a new `T` (that will be protected by a 
 /// `wdk-mutex`) to the `Grt`, assigning a `&str` for the key of a `BTreeMap`, and the value being the `T`. **Note:** you do
-/// not pass a `Mutex` into [`Self::register_mutex`]; the function will automatically wrap that for you.
+/// not pass a `Mutex` into [`Self::register_kmutex`] or [`Self::register_fast_mutex`] etc; the function will automatically wrap that for you.
 /// 
-/// [`Self::get_kmutex`] will then allow you to retrieve the `Mutex` dynamically and `lock` it as required via [`KMutex::lock`].
+/// [`Self::get_kmutex`] / [`Self::get_fast_mutex`] etc will then allow you to retrieve the `Mutex` dynamically.
 /// 
 /// # Examples
 /// 
@@ -51,12 +51,12 @@ static WDK_MTX_GRT_PTR: AtomicPtr<Grt> = AtomicPtr::new(null_mut());
 /// // Register a new Mutex in the `Grt` of value 0u32:
 /// 
 /// pub fn my_function() {
-///     Grt::register_mutex("my_test_mutex", 0u32);
+///     Grt::register_kmutex("my_test_mutex", 0u32);
 /// }
 /// 
 /// unsafe extern "C" fn my_thread_fn_pointer(_: *mut c_void) {
 ///     let my_mutex = Grt::get_kmutex::<u32>("my_test_mutex");
-///     if let Err(e) = my_mut {
+///     if let Err(e) = my_mutex {
 ///         println!("Error in thread: {:?}", e);
 ///         return;
 ///     }
@@ -74,6 +74,13 @@ static WDK_MTX_GRT_PTR: AtomicPtr<Grt> = AtomicPtr::new(null_mut());
 /// ```
 pub struct Grt {
     global_kmutex: BTreeMap<&'static str, Box<dyn Any>>,
+}
+
+
+/// The type of mutexes which is passed in to the Grt to correctly initialise a new `mutex`.
+pub enum MutexType {
+    FastMutex,
+    KMutex,
 }
 
 
@@ -126,14 +133,14 @@ impl Grt {
         Ok(())
     }
 
-    /// Register a new mutex for the global reference tracker to control.
+    /// Register a new [`KMutex`] for the global reference tracker to control.
     ///
     /// The function takes a label as a static &str which is the key of a BTreeMap, and the type you wish
     /// to protect with the mutex as the data. If the key already exists, the function will indiscriminately insert
     /// a key and overwrite any existing data.
     ///
     /// If you wish to perform this function checking for an existing key before registering the mutex object,
-    /// use [`Self::register_mutex_checked`].
+    /// use [`Self::register_kmutex_checked`].
     /// 
     /// # Errors
     /// 
@@ -144,9 +151,9 @@ impl Grt {
     /// # Examples
     /// 
     /// ```
-    /// Grt::register_mutex("my_test_mutex", 0u32);
+    /// Grt::register_kmutex("my_test_mutex", 0u32);
     /// ```
-    pub fn register_mutex<T: Any>(label: &'static str, data: T) -> Result<(), GrtError> {
+    pub fn register_kmutex<T: Any>(label: &'static str, data: T) -> Result<(), GrtError> {
         // Check for a null pointer on the atomic
         let atomic_ptr = WDK_MTX_GRT_PTR.load(SeqCst);
         if atomic_ptr.is_null() {
@@ -164,10 +171,49 @@ impl Grt {
         Ok(())
     }
 
-    /// Register a new mutex for the global reference tracker to control, throwing an error if the key already
+    /// Register a new [`FastMutex`] for the global reference tracker to control.
+    ///
+    /// The function takes a label as a static &str which is the key of a BTreeMap, and the type you wish
+    /// to protect with the mutex as the data. If the key already exists, the function will indiscriminately insert
+    /// a key and overwrite any existing data.
+    ///
+    /// If you wish to perform this function checking for an existing key before registering the mutex object,
+    /// use [`Self::register_fast_mutex_checked`].
+    /// 
+    /// # Errors
+    /// 
+    /// This function will error if:
+    /// 
+    /// - `Grt` has not been initialised, see [`Grt::init`]
+    ///
+    /// # Examples
+    /// 
+    /// ```
+    /// Grt::register_fast_mutex("my_test_mutex", 0u32);
+    /// ```
+    pub fn register_fast_mutex<T: Any>(label: &'static str, data: T) -> Result<(), GrtError> {
+        // Check for a null pointer on the atomic
+        let atomic_ptr = WDK_MTX_GRT_PTR.load(SeqCst);
+        if atomic_ptr.is_null() {
+            return Err(GrtError::GrtIsNull);
+        }
+
+        // Try initialise a new mutex
+        let mtx = Box::new(FastMutex::new(data).map_err(|e| GrtError::DriverMutexError(e))?);
+
+        // SAFETY: The atomic pointer is checked at the start of the fn for a nullptr
+        unsafe {
+            (*atomic_ptr).global_kmutex.insert(label, mtx);
+        }
+
+        Ok(())
+    }
+
+    
+    /// Register a new [`KMutex`] for the global reference tracker to control, throwing an error if the key already
     /// exists. 
     /// 
-    /// This is a checked alternative to [`Self::register_mutex`], and as such incurs a little additional overhead.
+    /// This is a checked alternative to [`Self::register_kmutex`], and as such incurs a little additional overhead.
     ///
     /// # Errors
     /// 
@@ -179,9 +225,9 @@ impl Grt {
     /// # Examples
     /// 
     /// ```
-    /// let result = Grt::register_mutex_checked("my_test_mutex", 0u32);
+    /// let result = Grt::register_kmutex_checked("my_test_mutex", 0u32);
     /// ```
-    pub fn register_mutex_checked<T: Any>(label: &'static str, data: T) -> Result<(), GrtError> {
+    pub fn register_kmutex_checked<T: Any>(label: &'static str, data: T) -> Result<(), GrtError> {
         // Check for a null pointer on the atomic
         let atomic_ptr = WDK_MTX_GRT_PTR.load(SeqCst);
         if atomic_ptr.is_null() {
@@ -204,7 +250,48 @@ impl Grt {
         Ok(())
     }
 
-    /// Retrieve a mutex by name from the `wdk-mutex`` global reference tracker.
+
+    /// Register a new [`FastMutex`] for the global reference tracker to control, throwing an error if the key already
+    /// exists. 
+    /// 
+    /// This is a checked alternative to [`Self::register_fast_mutex`], and as such incurs a little additional overhead.
+    ///
+    /// # Errors
+    /// 
+    /// This function will error if:
+    /// 
+    /// - `Grt` has not been initialised, see [`Grt::init`]
+    /// - The mutex key already exists
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// let result = Grt::register_fast_mutex_checked("my_test_mutex", 0u32);
+    /// ```
+    pub fn register_fast_mutex_checked<T: Any>(label: &'static str, data: T) -> Result<(), GrtError> {
+        // Check for a null pointer on the atomic
+        let atomic_ptr = WDK_MTX_GRT_PTR.load(SeqCst);
+        if atomic_ptr.is_null() {
+            return Err(GrtError::GrtIsNull);
+        }
+
+        // Try initialise a new mutex
+        let mtx = Box::new(FastMutex::new(data).map_err(|e| GrtError::DriverMutexError(e))?);
+
+        // SAFETY: The atomic pointer is checked at the start of the fn for a nullptr
+        unsafe {
+            let bucket = (*atomic_ptr).global_kmutex.get(label);
+            if bucket.is_some() {
+                return Err(GrtError::KeyExists);
+            }
+
+            (*atomic_ptr).global_kmutex.insert(label, mtx);
+        }
+
+        Ok(())
+    }
+
+    /// Retrieve a mutex by name from the `wdk-mutex` global reference tracker.
     /// 
     /// This function takes in a static `&str` to lookup your Mutex by key (where the key is the argument). When calling
     /// this function, a turbofish specifier is required to tell the compiler what type is contained in the `Mutex`. See
@@ -217,6 +304,7 @@ impl Grt {
     /// - The `Grt` has not been initialised
     /// - The `Grt` is empty
     /// - The key does not exist
+    /// - The mutex type is anything other than a [`KMutex`]
     /// 
     /// # Examples
     /// 
@@ -267,6 +355,70 @@ impl Grt {
     }
 
 
+    /// Retrieve a mutex by name from the `wdk-mutex` global reference tracker.
+    /// 
+    /// This function takes in a static `&str` to lookup your Mutex by key (where the key is the argument). When calling
+    /// this function, a turbofish specifier is required to tell the compiler what type is contained in the `Mutex`. See
+    /// examples for more information.
+    /// 
+    /// # Errors
+    /// 
+    /// This function will error if:
+    /// 
+    /// - The `Grt` has not been initialised
+    /// - The `Grt` is empty
+    /// - The key does not exist
+    /// - The mutex type is anything other than a [`FastMutex`]
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// {
+    ///     let my_mutex = Grt::get_fast_mutex::<u32>("my_test_mutex");
+    ///     if let Err(e) = my_mutex {
+    ///         println!("An error occurred: {:?}", e);
+    ///         return;
+    ///     }
+    ///     let mut lock = my_mutex.unwrap().lock().unwrap();
+    ///     *lock += 1;
+    /// }
+    /// ```
+    pub fn get_fast_mutex<T>(key: &'static str) -> Result<&'static FastMutex<T>, GrtError> {
+        //
+        // Perform checks for erroneous state
+        //
+        let ptr = WDK_MTX_GRT_PTR.load(SeqCst);        
+        if ptr.is_null() {
+            return Err(GrtError::GrtIsNull);
+        }
+
+        let grt = unsafe { &(*ptr).global_kmutex };
+        if grt.is_empty() {
+            return Err(GrtError::GrtIsEmpty);
+        }
+
+        let mutex = grt.get(key);
+        if mutex.is_none() {
+            return Err(GrtError::KeyNotFound);
+        }
+
+
+        //
+        // The mutex is valid so obtain a reference to it which can be returned
+        //
+
+        // SAFETY: Null pointer and inner null pointers have both been checked in the above lines.
+        let m = &**mutex.unwrap();
+        let km = m.downcast_ref::<FastMutex<T>>();
+
+        if km.is_none() {
+            return Err(GrtError::DowncastError);
+        }
+
+        Ok(km.unwrap())
+    }
+
+
     /// Destroy the global reference tracker for `wdk-mutex`.
     /// 
     /// Calling [`Self::destroy`] will destroy the 'runtime' provided for using globally accessible `wdk-mutex` mutexes
@@ -274,7 +426,7 @@ impl Grt {
     /// 
     /// # Safety 
     /// 
-    /// Once this function is called you will no longer be able to access any mutex's who's lifetime is managed by the 
+    /// Once this function is called you will no longer be able to access any mutexes who's lifetime is managed by the 
     /// `Grt`. 
     /// 
     /// **Note:** This function is marked `unsafe` as it could lead to UB if accidentally used whilst threads / callbacks

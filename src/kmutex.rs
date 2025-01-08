@@ -7,7 +7,6 @@ use core::{
     ops::{Deref, DerefMut},
     ptr::{self, drop_in_place, null_mut},
 };
-use wdk::println;
 use wdk_sys::{
     ntddk::{
         ExAllocatePool2, ExFreePool, KeGetCurrentIrql, KeInitializeMutex, KeReleaseMutex,
@@ -31,8 +30,6 @@ use crate::errors::DriverMutexError;
 /// allocated in the non-paged pool, and this holds information relating to the mutex.
 ///
 /// Access to the `T` within the `KMutex` can be done through calling [`Self::lock`].
-///
-/// To receive debug messages when the IRQL is too high for an operation, enable the feature flag `debug`.
 ///
 /// # Lifetimes
 ///
@@ -84,12 +81,12 @@ use crate::errors::DriverMutexError;
 /// // Register a new Mutex in the `Grt` of value 0u32:
 /// 
 /// pub fn my_function() {
-///     Grt::register_mutex("my_test_mutex", 0u32);
+///     Grt::register_kmutex("my_test_mutex", 0u32);
 /// }
 /// 
 /// unsafe extern "C" fn my_thread_fn_pointer(_: *mut c_void) {
 ///     let my_mutex = Grt::get_kmutex::<u32>("my_test_mutex");
-///     if let Err(e) = my_mut {
+///     if let Err(e) = my_mutex {
 ///         println!("Error in thread: {:?}", e);
 ///         return;
 ///     }
@@ -235,7 +232,7 @@ impl<T> KMutex<T> {
     ///
     /// - **Single Ownership Guarantee:** After calling [`Self::to_owned`], ensure that
     ///   no other references (especially static or global ones) attempt to access the
-    ///   underlying mutex. This is because the mutex's memory is deallocated once this
+    ///   underlying mutex. This is because the mutexes memory is deallocated once this
     ///   method is invoked.
     /// - **Exclusive Access:** This function should only be called when you can guarantee
     ///   that there will be no further access to the protected `T`. Violating this can
@@ -265,7 +262,7 @@ impl<T> KMutex<T> {
     ///
     /// - **Single Ownership Guarantee:** After calling [`Self::to_owned_box`], ensure that
     /// no other references (especially static or global ones) attempt to access the
-    /// underlying mutex. This is because the mutex's memory is deallocated once this
+    /// underlying mutex. This is because the mutexes memory is deallocated once this
     /// method is invoked.
     /// - **Exclusive Access:** This function should only be called when you can guarantee
     /// that there will be no further access to the protected `T`. Violating this can
@@ -375,9 +372,6 @@ impl<T> KMutexGuard<'_, T> {
     pub fn drop_safe(&mut self) -> Result<(), DriverMutexError> {
         let irql = unsafe { KeGetCurrentIrql() };
         if irql > DISPATCH_LEVEL as u8 {
-            if cfg!(feature = "debug") {
-                println!("[wdk-mutex] [-] Unable to safely drop the KMUTEX. Calling IRQL is too high: {}", irql);
-            }
             return Err(DriverMutexError::IrqlTooHigh);
         }
 
