@@ -57,6 +57,9 @@ As well as a `KMUTEX`, `wdk-mutex` also supports the use of acquiring a [FAST_MU
 
 # Examples
 
+To see a real project using this, check my [Sanctum driver](https://github.com/0xflux/Sanctum). Alternatively, check the [tests repo](https://github.com/0xflux/wdk_mutex_tests) for this crate which tests features which will give you inspiration as to how the mutexes can be used. I would recommend utilising the `Grt` 
+module for globally accessible mutexes.
+
 ## Locally scoped mutex:
 
 ```rust
