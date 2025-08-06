@@ -1,3 +1,8 @@
+# 1.1.0
+
+Alter semver so this crate can be used with up-to-date versions of the wdk crates so long as they are 
+compatible.
+
 # 1.0.0
 
 ## Additions
