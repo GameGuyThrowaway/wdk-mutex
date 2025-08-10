@@ -10,11 +10,6 @@ readme = "Readme.md"
 keywords = ["windows", "driver", "mutex", "kernel", "wdk"]
 description = "An idiomatic Rust mutex type for Windows kernel driver development."
 
-[package.metadata.wdk.driver-model]
-driver-type = "KMDF"
-kmdf-version-major = 1
-target-kmdf-version-minor = 33
-
 [lib]
 crate-type = ["lib"]
 
@@ -23,9 +18,9 @@ default = []
 nightly = ["wdk/nightly", "wdk-sys/nightly"]
 
 [dependencies]
-wdk = "0.3.1"
-wdk-sys = "0.4.0"
-wdk-alloc = "0.3.1"
+wdk = { path = "../windows-drivers-rs/crates/wdk" } # "0.3.1"
+wdk-sys = { path = "../windows-drivers-rs/crates/wdk-sys" } # "0.4.0"
+wdk-alloc = { path = "../windows-drivers-rs/crates/wdk-alloc" } # "0.3.1"
 
 [profile.dev]
 panic = "abort"
