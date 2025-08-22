@@ -18,9 +18,9 @@ default = []
 nightly = ["wdk/nightly", "wdk-sys/nightly"]
 
 [dependencies]
-wdk = { path = "../windows-drivers-rs/crates/wdk" } # "0.3.1"
-wdk-sys = { path = "../windows-drivers-rs/crates/wdk-sys" } # "0.4.0"
-wdk-alloc = { path = "../windows-drivers-rs/crates/wdk-alloc" } # "0.3.1"
+wdk = { git = "https://github.com/GameGuyThrowaway/windows-drivers-rs.git", branch = "wsk-bindings" }
+wdk-sys = { git = "https://github.com/GameGuyThrowaway/windows-drivers-rs.git", branch = "wsk-bindings" }
+wdk-alloc = { git = "https://github.com/GameGuyThrowaway/windows-drivers-rs.git", branch = "wsk-bindings" }
 
 [profile.dev]
 panic = "abort"
