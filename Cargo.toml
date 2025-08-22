@@ -10,10 +10,10 @@ readme = "Readme.md"
 keywords = ["windows", "driver", "mutex", "kernel", "wdk"]
 description = "An idiomatic Rust mutex type for Windows kernel driver development."
 
-# [package.metadata.wdk.driver-model]
-# driver-type = "KMDF"
-# kmdf-version-major = 1
-# target-kmdf-version-minor = 33
+[package.metadata.wdk.driver-model]
+driver-type = "KMDF"
+kmdf-version-major = 1
+target-kmdf-version-minor = 33
 
 [lib]
 crate-type = ["lib"]
