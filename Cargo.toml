@@ -1,6 +1,6 @@
 [package]
 name = "wdk-mutex"
-version = "1.1.0"
+version = "1.2.0"
 edition = "2021"
 authors = ["Flux Sec <fluxsec@proton.me>"]
 license = "MIT"
@@ -14,13 +14,18 @@ description = "An idiomatic Rust mutex type for Windows kernel driver developmen
 crate-type = ["lib"]
 
 [features]
-default = []
+default = ["driver-wdm"]
+
+driver-wdm  = []
+driver-kmdf = []
+driver-umdf = []
+
 nightly = ["wdk/nightly", "wdk-sys/nightly"]
 
 [dependencies]
-wdk = ">=0.3.0"
-wdk-sys = ">=0.3.0"
-wdk-alloc = ">=0.3.0"
+wdk = "0.3"
+wdk-sys = "0.4"
+wdk-alloc = "0.3"
 
 [profile.dev]
 panic = "abort"

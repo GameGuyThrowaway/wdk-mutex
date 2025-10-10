@@ -24,6 +24,29 @@ All tests are carried out at [wdk_mutex_tests](https://github.com/0xflux/wdk_mut
 a separate repository which is built as a driver to test all functionality of the `wdk-mutex` crate. If you wish to run the tests
 yourself, or contribute, please check that repository.
 
+### Feature gates
+
+`wdk-mutex` has the following feature gates:
+
+- **driver-wdm** — The default feature; builds against the Windows Driver Model (WDM) bindings.  
+- **driver-kmdf** — Compiles for the Kernel Mode Driver Framework (KMDF).  
+- **driver-umdf** — Compiles for the User Mode Driver Framework (UMDF).  
+
+To add `wdk-mutex` to your project to build against the above targetS:
+
+```PowerShell
+# Default (WDM)
+cargo add wdk-mutex
+
+# Kernel Mode Driver Framework (KMDF)
+cargo add wdk-mutex --no-default-features --features driver-kmdf
+
+# User Mode Driver Framework (UMDF)
+cargo add wdk-mutex --no-default-features --features driver-umdf
+```
+
+## Licence
+
 This is licenced with an MIT Licence, conditions can be found in LICENCE in the crate GitHub repository.
 
 ## Features:

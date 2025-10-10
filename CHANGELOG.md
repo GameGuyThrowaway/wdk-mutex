@@ -1,3 +1,8 @@
+# 1.2.0
+
+PR removes the crate dependency on only WDM allowing the crate to be built with KMDF/UMDF targets. These are feature gated,
+see updated README / crate docs for clarity on enabling.
+
 # 1.1.0
 
 Alter semver so this crate can be used with up-to-date versions of the wdk crates so long as they are 
