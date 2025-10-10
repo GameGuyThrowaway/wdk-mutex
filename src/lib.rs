@@ -52,11 +52,6 @@
 
 #![no_std]
 
-// Add explicit feature gating so the crate can build + link now it is removed from the toml
-#![cfg_attr(feature = "driver-wdm",  cfg(driver_model__driver_type = "WDM"))]
-#![cfg_attr(feature = "driver-kmdf", cfg(driver_model__driver_type = "KMDF"))]
-#![cfg_attr(feature = "driver-umdf", cfg(driver_model__driver_type = "UMDF"))]
-
 //
 // Public modules
 //

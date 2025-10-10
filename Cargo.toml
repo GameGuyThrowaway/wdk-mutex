@@ -14,7 +14,7 @@ description = "An idiomatic Rust mutex type for Windows kernel driver developmen
 crate-type = ["lib"]
 
 [features]
-default = ["driver-kmdf"]
+default = ["driver-wdm"]
 
 driver-wdm  = []
 driver-kmdf = []
@@ -34,8 +34,3 @@ lto = true
 [profile.release]
 panic = "abort"
 lto = true
-
-[lints.rust]
-unexpected_cfgs = { level = "allow", check-cfg = [
-    'cfg(driver_model__driver_type, values("WDM","KMDF","UMDF"))'
-] }
