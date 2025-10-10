@@ -18,9 +18,9 @@ default = []
 nightly = ["wdk/nightly", "wdk-sys/nightly"]
 
 [dependencies]
-wdk = ">=0.3.0"
-wdk-sys = ">=0.3.0"
-wdk-alloc = ">=0.3.0"
+wdk = "0.3"
+wdk-sys = "0.4"
+wdk-alloc = "0.3"
 
 [profile.dev]
 panic = "abort"
