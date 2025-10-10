@@ -1,6 +1,6 @@
 [package]
 name = "wdk-mutex"
-version = "1.1.0"
+version = "1.2.0"
 edition = "2021"
 authors = ["Flux Sec <fluxsec@proton.me>"]
 license = "MIT"
@@ -14,7 +14,12 @@ description = "An idiomatic Rust mutex type for Windows kernel driver developmen
 crate-type = ["lib"]
 
 [features]
-default = []
+default = ["driver-kmdf"]
+
+driver-wdm  = []
+driver-kmdf = []
+driver-umdf = []
+
 nightly = ["wdk/nightly", "wdk-sys/nightly"]
 
 [dependencies]
@@ -29,3 +34,8 @@ lto = true
 [profile.release]
 panic = "abort"
 lto = true
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", check-cfg = [
+    'cfg(driver_model__driver_type, values("WDM","KMDF","UMDF"))'
+] }
