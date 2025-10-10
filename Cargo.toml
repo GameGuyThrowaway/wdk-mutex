@@ -9,6 +9,7 @@ documentation = "https://0xflux.github.io/wdk-mutex"
 readme = "Readme.md"
 keywords = ["windows", "driver", "mutex", "kernel", "wdk"]
 description = "An idiomatic Rust mutex type for Windows kernel driver development."
+build = "build.rs"
 
 [lib]
 crate-type = ["lib"]
