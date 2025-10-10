@@ -10,9 +10,6 @@ readme = "Readme.md"
 keywords = ["windows", "driver", "mutex", "kernel", "wdk"]
 description = "An idiomatic Rust mutex type for Windows kernel driver development."
 
-[package.metadata.wdk.driver-model]
-driver-type = "WDM"
-
 [lib]
 crate-type = ["lib"]
 
