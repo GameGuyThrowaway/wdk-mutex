@@ -2,11 +2,28 @@
 
 An idiomatic Rust mutex type for Windows kernel driver development, supporting both `wdm` and `kmdf` drivers.
 
+### Installation
+
 To use this crate, simply:
 
 ```
 cargo add wdk-mutex
 ```
+
+In addition to defining either `WDM` or `KMDF` in your `Cargo.toml` as per the instructions given at [windows-drivers-rs](https://github.com/microsoft/windows-drivers-rs/), 
+you **must** add the following to your `.cargo/config.toml`:
+
+```toml
+[build]
+rustflags = [
+  "-C", "target-feature=+crt-static",
+  "--cfg", 'driver_model__driver_type="WDM"' # This line, make sure driver type matches your config, either WDM or KMDF
+]
+```
+
+As per the above comment, ensure either `driver_model__driver_type="WDM"` for WDM, or `driver_model__driver_type="KMDF"`.
+
+### Crate Info
 
 **See the sections below for examples**. This crate assumes you already have a Rust Windows Driver Kit project
 using the Microsoft [windows-drivers-rs](https://github.com/microsoft/windows-drivers-rs) crate. You will
