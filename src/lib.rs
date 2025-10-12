@@ -10,31 +10,6 @@
 //! This crate is **not** affiliated with the WDK crates provided by Microsoft, but is designed to work with them for Windows Rust Kernel Driver
 //! development.
 //!
-//! # Features:
-//! - `driver-wdm`: The **default** features for this crate support WDM bindings.
-//! - `driver-kmdf`: Compiles for the **Kernel Mode Driver Framework (KMDF)**.
-//! - `driver-umdf`: Compiles for the **User Mode Driver Framework (UMDF)**.
-//!
-//! ## Enabling driver model features
-//! Exactly **one** driver model feature must be active at compile time.
-//! The crate defaults to **WDM**, but you can explicitly select another framework by changing the feature flags when you build or add the dependency.
-//! 
-//! ### Using `cargo add`
-//! ```PowerShell
-//! # Default (WDM)
-//! cargo add wdk-mutex
-//! 
-//! # Kernel Mode Driver Framework (KMDF)
-//! cargo add wdk-mutex --no-default-features --features driver-kmdf
-//! 
-//! # User Mode Driver Framework (UMDF)
-//! cargo add wdk-mutex --no-default-features --features driver-umdf
-//! ```
-//! 
-//! # Planned updates
-//!
-//! - **Critical Sections**: An idiomatic implementation for entering and leaving a mutex critical section where no underlying T is protected.
-//!
 //! # Tests
 //!
 //! Tests have been conducted on public modules.

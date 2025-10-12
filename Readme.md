@@ -1,6 +1,6 @@
 # wdk-mutex
 
-An idiomatic Rust mutex type for Windows kernel driver development.
+An idiomatic Rust mutex type for Windows kernel driver development, supporting both `wdm` and `kmdf` drivers.
 
 To use this crate, simply:
 
@@ -24,26 +24,11 @@ All tests are carried out at [wdk_mutex_tests](https://github.com/0xflux/wdk_mut
 a separate repository which is built as a driver to test all functionality of the `wdk-mutex` crate. If you wish to run the tests
 yourself, or contribute, please check that repository.
 
-### Feature gates
+## Contributing
 
-`wdk-mutex` has the following feature gates:
-
-- **driver-wdm** — The default feature; builds against the Windows Driver Model (WDM) bindings.  
-- **driver-kmdf** — Compiles for the Kernel Mode Driver Framework (KMDF).  
-- **driver-umdf** — Compiles for the User Mode Driver Framework (UMDF).  
-
-To add `wdk-mutex` to your project to build against the above targetS:
-
-```PowerShell
-# Default (WDM)
-cargo add wdk-mutex
-
-# Kernel Mode Driver Framework (KMDF)
-cargo add wdk-mutex --no-default-features --features driver-kmdf
-
-# User Mode Driver Framework (UMDF)
-cargo add wdk-mutex --no-default-features --features driver-umdf
-```
+Contributions are welcome; if you do wish to contribute you will have to uncomment some items marked in the `Cargo.toml` to allow bindgen to produce the
+necessary files on your local build (this is done automatically when you import this crate as either a `wdm` or `kmdf` project). When you are ready
+to submit a PR, please ensure these are commented out as it will break for anybody using the opposite framework.
 
 ## Licence
 
