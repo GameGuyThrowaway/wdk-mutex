@@ -1,0 +1,9 @@
+(function() {
+    var implementors = Object.fromEntries([["wdk_mutex",[["impl UnsafeUnpin for <a class=\"enum\" href=\"wdk_mutex/errors/enum.DriverMutexError.html\" title=\"enum wdk_mutex::errors::DriverMutexError\">DriverMutexError</a>",1,["wdk_mutex::errors::DriverMutexError"]],["impl UnsafeUnpin for <a class=\"enum\" href=\"wdk_mutex/errors/enum.GrtError.html\" title=\"enum wdk_mutex::errors::GrtError\">GrtError</a>",1,["wdk_mutex::errors::GrtError"]],["impl UnsafeUnpin for <a class=\"enum\" href=\"wdk_mutex/grt/enum.MutexType.html\" title=\"enum wdk_mutex::grt::MutexType\">MutexType</a>",1,["wdk_mutex::grt::MutexType"]],["impl UnsafeUnpin for <a class=\"struct\" href=\"wdk_mutex/grt/struct.Grt.html\" title=\"struct wdk_mutex::grt::Grt\">Grt</a>",1,["wdk_mutex::grt::Grt"]],["impl&lt;'a, T&gt; UnsafeUnpin for <a class=\"struct\" href=\"wdk_mutex/fast_mutex/struct.FastMutexGuard.html\" title=\"struct wdk_mutex::fast_mutex::FastMutexGuard\">FastMutexGuard</a>&lt;'a, T&gt;",1,["wdk_mutex::fast_mutex::FastMutexGuard"]],["impl&lt;'a, T&gt; UnsafeUnpin for <a class=\"struct\" href=\"wdk_mutex/kmutex/struct.KMutexGuard.html\" title=\"struct wdk_mutex::kmutex::KMutexGuard\">KMutexGuard</a>&lt;'a, T&gt;",1,["wdk_mutex::kmutex::KMutexGuard"]],["impl&lt;T&gt; UnsafeUnpin for <a class=\"struct\" href=\"wdk_mutex/fast_mutex/struct.FastMutex.html\" title=\"struct wdk_mutex::fast_mutex::FastMutex\">FastMutex</a>&lt;T&gt;",1,["wdk_mutex::fast_mutex::FastMutex"]],["impl&lt;T&gt; UnsafeUnpin for <a class=\"struct\" href=\"wdk_mutex/kmutex/struct.KMutex.html\" title=\"struct wdk_mutex::kmutex::KMutex\">KMutex</a>&lt;T&gt;",1,["wdk_mutex::kmutex::KMutex"]]]]]);
+    if (window.register_implementors) {
+        window.register_implementors(implementors);
+    } else {
+        window.pending_implementors = implementors;
+    }
+})()
+//{"start":57,"fragment_lengths":[1611]}
