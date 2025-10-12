@@ -10,14 +10,6 @@
 //! This crate is **not** affiliated with the WDK crates provided by Microsoft, but is designed to work with them for Windows Rust Kernel Driver
 //! development.
 //!
-//! # Additional features:
-//!
-//! - `debug`: Enabling this feature will print debug messages to an attached debugger or kernel message viewer when an IRQL error occurs.
-//!
-//! # Planned updates
-//!
-//! - **Critical Sections**: An idiomatic implementation for entering and leaving a mutex critical section where no underlying T is protected.
-//!
 //! # Tests
 //!
 //! Tests have been conducted on public modules.

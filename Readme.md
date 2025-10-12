@@ -1,6 +1,6 @@
 # wdk-mutex
 
-An idiomatic Rust mutex type for Windows kernel driver development.
+An idiomatic Rust mutex type for Windows kernel driver development, supporting both `wdm` and `kmdf` drivers.
 
 To use this crate, simply:
 
@@ -23,6 +23,14 @@ As this crate integrates into the wdk ecosystem, Microsoft stipulate: This proje
 All tests are carried out at [wdk_mutex_tests](https://github.com/0xflux/wdk_mutex_tests), 
 a separate repository which is built as a driver to test all functionality of the `wdk-mutex` crate. If you wish to run the tests
 yourself, or contribute, please check that repository.
+
+## Contributing
+
+Contributions are welcome; if you do wish to contribute you will have to uncomment some items marked in the `Cargo.toml` to allow bindgen to produce the
+necessary files on your local build (this is done automatically when you import this crate as either a `wdm` or `kmdf` project). When you are ready
+to submit a PR, please ensure these are commented out as it will break for anybody using the opposite framework.
+
+## Licence
 
 This is licenced with an MIT Licence, conditions can be found in LICENCE in the crate GitHub repository.
 
