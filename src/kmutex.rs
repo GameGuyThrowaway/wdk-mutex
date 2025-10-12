@@ -37,7 +37,7 @@ use crate::errors::DriverMutexError;
 /// the `KMutex` must be considered by the caller. See examples below for usage.
 ///
 /// The `KMutex` can exist in a locally scoped function with little additional configuration. To use the mutex across
-/// thread boundaries, or to use it in callback functions, you can use the `Grt` module found in this crate. See below for 
+/// thread boundaries, or to use it in callback functions, you can use the `Grt` module found in this crate. See below for
 /// details.
 ///
 /// # Deallocation
@@ -62,7 +62,7 @@ use crate::errors::DriverMutexError;
 ///
 /// ```
 /// // Initialise the mutex on DriverEntry
-/// 
+///
 /// #[export_name = "DriverEntry"]
 /// pub unsafe extern "system" fn driver_entry(
 ///     driver: &mut DRIVER_OBJECT,
@@ -72,32 +72,32 @@ use crate::errors::DriverMutexError;
 ///         println!("Error creating Grt!: {:?}", e);
 ///         return STATUS_UNSUCCESSFUL;
 ///     }
-/// 
+///
 ///     // ...
 ///     my_function();
 /// }
-/// 
-/// 
+///
+///
 /// // Register a new Mutex in the `Grt` of value 0u32:
-/// 
+///
 /// pub fn my_function() {
 ///     Grt::register_kmutex("my_test_mutex", 0u32);
 /// }
-/// 
+///
 /// unsafe extern "C" fn my_thread_fn_pointer(_: *mut c_void) {
 ///     let my_mutex = Grt::get_kmutex::<u32>("my_test_mutex");
 ///     if let Err(e) = my_mutex {
 ///         println!("Error in thread: {:?}", e);
 ///         return;
 ///     }
-/// 
+///
 ///     let mut lock = my_mutex.unwrap().lock().unwrap();
 ///     *lock += 1;
 /// }
-/// 
-/// 
+///
+///
 /// // Destroy the Grt to prevent memory leak on DriverExit
-/// 
+///
 /// extern "C" fn driver_exit(driver: *mut DRIVER_OBJECT) {
 ///     unsafe {Grt::destroy()};
 /// }
@@ -164,9 +164,10 @@ impl<T> KMutex<T> {
             KeInitializeMutex(&(*kmutex_inner_ptr).mutex as *const _ as *mut _, 0);
         }
 
-        Ok(Self { inner: kmutex_inner_ptr })
+        Ok(Self {
+            inner: kmutex_inner_ptr,
+        })
     }
-
 
     /// Acquires a mutex in a non-alertable manner.
     ///
@@ -251,7 +252,6 @@ impl<T> KMutex<T> {
         data_read
     }
 
-
     /// Consumes the mutex and returns an owned `Box<T>` containing the protected data (`T`).
     ///
     /// This method is an alternative to [`Self::to_owned`] and is particularly useful when
@@ -296,7 +296,6 @@ impl<T> Drop for KMutex<T> {
     }
 }
 
-
 /// A RAII scoped guard for the inner data protected by the mutex. Once this guard is given out, the protected data
 /// may be safely mutated by the caller as we guarantee exclusive access via Windows Kernel Mutex primitives.
 ///
@@ -329,7 +328,6 @@ where
         write!(f, "{}", unsafe { &(*self.kmutex.inner).data })
     }
 }
-
 
 impl<T> Deref for KMutexGuard<'_, T> {
     type Target = T;

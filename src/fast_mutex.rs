@@ -9,30 +9,31 @@ use core::{
 };
 use wdk_sys::{
     ntddk::{
-        ExAcquireFastMutex, ExAllocatePool2, ExFreePool, ExReleaseFastMutex, KeGetCurrentIrql, KeInitializeEvent
-    }, APC_LEVEL, DISPATCH_LEVEL, FALSE, FAST_MUTEX, FM_LOCK_BIT, POOL_FLAG_NON_PAGED, _EVENT_TYPE::SynchronizationEvent
+        ExAcquireFastMutex, ExAllocatePool2, ExFreePool, ExReleaseFastMutex, KeGetCurrentIrql,
+        KeInitializeEvent,
+    },
+    APC_LEVEL, DISPATCH_LEVEL, FALSE, FAST_MUTEX, FM_LOCK_BIT, POOL_FLAG_NON_PAGED,
+    _EVENT_TYPE::SynchronizationEvent,
 };
 
 extern crate alloc;
 
 use crate::errors::DriverMutexError;
 
-/// An internal binding for the ExInitializeFastMutex routine. 
-/// 
+/// An internal binding for the ExInitializeFastMutex routine.
+///
 /// # Safety
-/// 
+///
 /// This function does not check the IRQL as the only place this function is used is in an area where the IRQL
 /// is already checked.
 #[allow(non_snake_case)]
 unsafe fn ExInitializeFastMutex(fast_mutex: *mut FAST_MUTEX) {
-
     core::ptr::write_volatile(&mut (*fast_mutex).Count, FM_LOCK_BIT as i32);
 
     (*fast_mutex).Owner = core::ptr::null_mut();
     (*fast_mutex).Contention = 0;
     KeInitializeEvent(&mut (*fast_mutex).Event, SynchronizationEvent, FALSE as _)
 }
-
 
 /// A thread safe mutex implemented through acquiring a `FAST_MUTEX` in the Windows kernel.
 ///
@@ -51,7 +52,7 @@ unsafe fn ExInitializeFastMutex(fast_mutex: *mut FAST_MUTEX) {
 /// the `FastMutex` must be considered by the caller. See examples below for usage.
 ///
 /// The `FastMutex` can exist in a locally scoped function with little additional configuration. To use the mutex across
-/// thread boundaries, or to use it in callback functions, you can use the `Grt` module found in this crate. See below for 
+/// thread boundaries, or to use it in callback functions, you can use the `Grt` module found in this crate. See below for
 /// details.
 ///
 /// # Deallocation
@@ -76,7 +77,7 @@ unsafe fn ExInitializeFastMutex(fast_mutex: *mut FAST_MUTEX) {
 ///
 /// ```
 /// // Initialise the mutex on DriverEntry
-/// 
+///
 /// #[export_name = "DriverEntry"]
 /// pub unsafe extern "system" fn driver_entry(
 ///     driver: &mut DRIVER_OBJECT,
@@ -86,32 +87,32 @@ unsafe fn ExInitializeFastMutex(fast_mutex: *mut FAST_MUTEX) {
 ///         println!("Error creating Grt!: {:?}", e);
 ///         return STATUS_UNSUCCESSFUL;
 ///     }
-/// 
+///
 ///     // ...
 ///     my_function();
 /// }
-/// 
-/// 
+///
+///
 /// // Register a new Mutex in the `Grt` of value 0u32:
-/// 
+///
 /// pub fn my_function() {
 ///     Grt::register_fast_mutex("my_test_mutex", 0u32);
 /// }
-/// 
+///
 /// unsafe extern "C" fn my_thread_fn_pointer(_: *mut c_void) {
 ///     let my_mutex = Grt::get_fast_mutex::<u32>("my_test_mutex");
 ///     if let Err(e) = my_mutex {
 ///         println!("Error in thread: {:?}", e);
 ///         return;
 ///     }
-/// 
+///
 ///     let mut lock = my_mutex.unwrap().lock().unwrap();
 ///     *lock += 1;
 /// }
-/// 
-/// 
+///
+///
 /// // Destroy the Grt to prevent memory leak on DriverExit
-/// 
+///
 /// extern "C" fn driver_exit(driver: *mut DRIVER_OBJECT) {
 ///     unsafe {Grt::destroy()};
 /// }
@@ -131,7 +132,6 @@ unsafe impl<T> Sync for FastMutex<T> {}
 unsafe impl<T> Send for FastMutex<T> {}
 
 impl<T> FastMutex<T> {
-
     /// Creates a new `FAST_MUTEX` Windows Kernel Driver Mutex.
     ///
     /// # IRQL
@@ -149,7 +149,7 @@ impl<T> FastMutex<T> {
         // This can only be called at a level <= DISPATCH_LEVEL; check current IRQL
         // https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-exinitializefastmutex
         if unsafe { KeGetCurrentIrql() } > DISPATCH_LEVEL as u8 {
-            return Err(DriverMutexError::IrqlTooHigh)
+            return Err(DriverMutexError::IrqlTooHigh);
         }
 
         //
@@ -184,9 +184,10 @@ impl<T> FastMutex<T> {
             ExInitializeFastMutex(&mut (*fast_mtx_inner_ptr).mutex);
         }
 
-        Ok(Self { inner: fast_mtx_inner_ptr })
+        Ok(Self {
+            inner: fast_mtx_inner_ptr,
+        })
     }
-
 
     /// Acquires the mutex, raising the IRQL to `APC_LEVEL`.
     ///
@@ -259,7 +260,6 @@ impl<T> FastMutex<T> {
         data_read
     }
 
-    
     /// Consumes the mutex and returns an owned `Box<T>` containing the protected data (`T`).
     ///
     /// This method is an alternative to [`Self::to_owned`] and is particularly useful when
@@ -304,7 +304,6 @@ impl<T> Drop for FastMutex<T> {
     }
 }
 
-
 /// A RAII scoped guard for the inner data protected by the mutex. Once this guard is given out, the protected data
 /// may be safely mutated by the caller as we guarantee exclusive access via Windows Kernel Mutex primitives.
 ///
@@ -312,7 +311,7 @@ impl<T> Drop for FastMutex<T> {
 ///
 /// # IRQL
 ///
-/// Access to the data within this guard must be done at `APC_LEVEL` It is the callers responsible to 
+/// Access to the data within this guard must be done at `APC_LEVEL` It is the callers responsible to
 /// manage IRQL whilst using the `FastMutex`. On calling [`FastMutex::lock`], the IRQL will automatically
 /// be raised to `APC_LEVEL`.
 ///
@@ -336,7 +335,6 @@ where
     }
 }
 
-
 impl<T> Deref for FastMutexGuard<'_, T> {
     type Target = T;
 
@@ -358,7 +356,7 @@ impl<T> DerefMut for FastMutexGuard<'_, T> {
 impl<T> Drop for FastMutexGuard<'_, T> {
     fn drop(&mut self) {
         // NOT SAFE AT AN INVALID IRQL
-        unsafe { ExReleaseFastMutex(&mut (*self.fast_mutex.inner).mutex) }; 
+        unsafe { ExReleaseFastMutex(&mut (*self.fast_mutex.inner).mutex) };
     }
 }
 
@@ -381,7 +379,7 @@ impl<T> FastMutexGuard<'_, T> {
             return Err(DriverMutexError::IrqlTooHigh);
         }
 
-        unsafe { ExReleaseFastMutex(&mut (*self.fast_mutex.inner).mutex) }; 
+        unsafe { ExReleaseFastMutex(&mut (*self.fast_mutex.inner).mutex) };
 
         Ok(())
     }

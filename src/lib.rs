@@ -1,16 +1,16 @@
 //! An idiomatic Rust mutex type for Windows kernel driver development, supporting both `wdm` and `kmdf` drivers.
-//! 
+//!
 //! ### Installation
-//! 
+//!
 //! To use this crate, simply:
-//! 
+//!
 //! ```shell
 //! cargo add wdk-mutex
 //! ```
-//! 
-//! In addition to defining either `WDM` or `KMDF` in your `Cargo.toml` as per the instructions given at [windows-drivers-rs](https://github.com/microsoft/windows-drivers-rs/), 
+//!
+//! In addition to defining either `WDM` or `KMDF` in your `Cargo.toml` as per the instructions given at [windows-drivers-rs](https://github.com/microsoft/windows-drivers-rs/),
 //! you **must** add the following to your `.cargo/config.toml`:
-//! 
+//!
 //! ```toml
 //! [build]
 //! rustflags = [
@@ -18,9 +18,9 @@
 //!   "--cfg", 'driver_model__driver_type="WDM"' # This line, make sure driver type matches your config, either WDM or KMDF
 //! ]
 //! ```
-//! 
+//!
 //! As per the above comment, ensure either `driver_model__driver_type="WDM"` for WDM, or `driver_model__driver_type="KMDF"`.
-//! 
+//!
 //! ### Crate Info
 //!
 //! The crate will safely check IRQL before doing operations which would cause a STOP CODE of
@@ -56,11 +56,11 @@
 #[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF"))]
 pub mod errors;
 #[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF"))]
+pub mod fast_mutex;
+#[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF"))]
 pub mod grt;
 #[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF"))]
 pub mod kmutex;
-#[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF"))]
-pub mod fast_mutex;
 
 //
 // Private modules

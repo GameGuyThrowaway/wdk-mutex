@@ -19,13 +19,6 @@ description = "An idiomatic Rust mutex type for Windows kernel driver developmen
 [lib]
 crate-type = ["lib"]
 
-[features]
-default = ["driver-wdm"]
-
-driver-wdm  = []
-driver-kmdf = []
-driver-umdf = []
-
 nightly = ["wdk/nightly", "wdk-sys/nightly"]
 
 [dependencies]
