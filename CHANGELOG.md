@@ -1,3 +1,7 @@
+# 1.3.0
+
+Bump version of wdk dependencies to latest edition.
+
 # 1.2.0
 
 PR removes the crate dependency on only WDM allowing the crate to be built with KMDF/UMDF targets. These are feature gated,
