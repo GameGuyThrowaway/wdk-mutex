@@ -10,6 +10,13 @@ readme = "Readme.md"
 keywords = ["windows", "driver", "mutex", "kernel", "wdk"]
 description = "An idiomatic Rust mutex type for Windows kernel driver development."
 
+include = [
+  "Cargo.toml",
+  "LICENCE",
+  "Readme.md",
+  "src/**",
+]
+
 # Important: If you are contributing to this crate you will need to uncomment out the below in order to build
 # against the wdk properly. Once it is ready to be merged into the library, please comment out.
 # You may need to do a `cargo clean` in between toggles.
@@ -33,13 +40,6 @@ lto = true
 [profile.release]
 panic = "abort"
 lto = true
-
-include = [
-  "Cargo.toml",
-  "LICENCE",
-  "Readme.md",
-  "src/**",
-]
 
 [lints.rust]
 unexpected_cfgs = { level = "allow", check-cfg = [
