@@ -6,6 +6,8 @@
 #
 # in the toml..
 
+$env:RUSTFLAGS = '--cfg driver_model__driver_type="WDM" -C target-feature=+crt-static'
+cargo clean
 cargo check
 cargo doc --no-deps --lib
 
