@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Flux Sec <fluxsec@proton.me>"]
 license = "MIT"
 repository = "https://github.com/0xflux/wdk_mutex"
-documentation = "https://0xflux.github.io/wdk-mutex"
+# documentation = "https://0xflux.github.io/wdk-mutex"
 readme = "Readme.md"
 keywords = ["windows", "driver", "mutex", "kernel", "wdk"]
 description = "An idiomatic Rust mutex type for Windows kernel driver development."
@@ -22,6 +22,9 @@ include = [
 # You may need to do a `cargo clean` in between toggles.
 # [package.metadata.wdk.driver-model]
 # driver-type = "WDM"
+
+[package.metadata.docs.rs]
+rustdoc-args = ["--cfg", "driver_model__driver_type=\"WDM\""]
 
 [lib]
 crate-type = ["lib"]
