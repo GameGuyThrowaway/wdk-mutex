@@ -1,3 +1,8 @@
+# 1.3.2
+
+Fixes [issue](https://github.com/0xflux/wdk-mutex/issues/13) where calling `to_owned` and `to_owned_box` drops the inner
+`T`.
+
 # 1.3.0
 
 Bump version of wdk dependencies to latest edition.
