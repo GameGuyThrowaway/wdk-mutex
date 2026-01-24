@@ -6,15 +6,18 @@
 #
 # in the toml..
 
-$env:RUSTFLAGS = '--cfg driver_model__driver_type="WDM" -C target-feature=+crt-static'
-cargo clean
-cargo check
+Remove-Item -Recurse -Force .\target -ErrorAction SilentlyContinue
+
+$env:RUSTFLAGS    = '--cfg driver_model__driver_type="WDM" -C target-feature=+crt-static'
+$env:RUSTDOCFLAGS = '--cfg driver_model__driver_type="WDM"'
+
 cargo doc --no-deps --lib
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-Remove-Item -Recurse -Force ./docs
-'<meta http-equiv="refresh" content="0; url=wdk_mutex">' | Out-File -Encoding ascii -FilePath ./target/doc/index.html -Force
+Remove-Item -Recurse -Force .\docs -ErrorAction SilentlyContinue
+'<meta http-equiv="refresh" content="0; url=wdk_mutex">' | Out-File -Encoding ascii -FilePath .\target\doc\index.html -Force
 
-mkdir docs
-Copy-Item -Path ./target/doc/* -Destination ./docs -Recurse -Force -Container
+New-Item -ItemType Directory -Path .\docs | Out-Null
+Copy-Item -Path .\target\doc\* -Destination .\docs -Recurse -Force
 
 Write-Output "All done, don't forget to comment out wdm / kmdf in the toml!"

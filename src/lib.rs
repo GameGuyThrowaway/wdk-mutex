@@ -53,17 +53,17 @@
 //
 // Public modules
 //
-#[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF"))]
+#[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF", doc))]
 pub mod errors;
-#[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF"))]
+#[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF", doc))]
 pub mod fast_mutex;
-#[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF"))]
+#[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF", doc))]
 pub mod grt;
-#[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF"))]
+#[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF", doc))]
 pub mod kmutex;
 
 //
 // Private modules
 //
-#[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF"))]
+#[cfg(any(driver_model__driver_type = "WDM", driver_model__driver_type = "KMDF", doc))]
 mod alloc;
