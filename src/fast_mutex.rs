@@ -2,10 +2,7 @@
 
 use alloc::boxed::Box;
 use core::{
-    ffi::c_void,
-    fmt::Display,
-    ops::{Deref, DerefMut},
-    ptr::{self, drop_in_place},
+    ffi::c_void, fmt::Display, mem::ManuallyDrop, ops::{Deref, DerefMut}, ptr::{self, drop_in_place}
 };
 use wdk_sys::{
     ntddk::{
@@ -238,6 +235,10 @@ impl<T> FastMutex<T> {
     /// consider using [`Self::to_owned_box`] instead.
     ///
     /// # Safety
+    /// 
+    /// This function moves `T` out of the mutex without running `Drop` on the original 
+    /// in-place value. The returned `T` remains fully owned by the caller and will be 
+    /// dropped normally.
     ///
     /// - **Single Ownership Guarantee:** After calling [`Self::to_owned`], ensure that
     ///   no other references (especially static or global ones) attempt to access the
@@ -246,7 +247,7 @@ impl<T> FastMutex<T> {
     /// - **Exclusive Access:** This function should only be called when you can guarantee
     ///   that there will be no further access to the protected `T`. Violating this can
     ///   lead to undefined behavior since the memory is freed after the call.
-    ///
+    /// 
     /// # Example
     ///
     /// ```
@@ -256,11 +257,17 @@ impl<T> FastMutex<T> {
     /// }
     /// ```
     pub unsafe fn to_owned(self) -> T {
-        let data_read = unsafe { ptr::read(&(*self.inner).data) };
+        let manually_dropped = ManuallyDrop::new(self);
+        let data_read = unsafe { ptr::read(&(*manually_dropped.inner).data) };
+        
+        // Free the mutex allocation without using drop semantics which could cause an
+        // accidental double drop of the underlying `T`.
+        unsafe { ExFreePool(manually_dropped.inner as _) };
+
         data_read
     }
 
-    /// Consumes the mutex and returns an owned `Box<T>` containing the protected data (`T`).
+    /// Consumes the mutex and returns an owned `Box<T>` containing the protected data (`T`). 
     ///
     /// This method is an alternative to [`Self::to_owned`] and is particularly useful when
     /// dealing with large data types. By returning a `Box<T>`, the data is pool-allocated,
@@ -268,6 +275,10 @@ impl<T> FastMutex<T> {
     ///
     /// # Safety
     ///
+    /// This function moves `T` out of the mutex without running `Drop` on the original 
+    /// in-place value. The returned `T` remains fully owned by the caller and will be 
+    /// dropped normally.
+    /// 
     /// - **Single Ownership Guarantee:** After calling [`Self::to_owned_box`], ensure that
     /// no other references (especially static or global ones) attempt to access the
     /// underlying mutex. This is because the mutexes memory is deallocated once this
@@ -275,7 +286,7 @@ impl<T> FastMutex<T> {
     /// - **Exclusive Access:** This function should only be called when you can guarantee
     /// that there will be no further access to the protected `T`. Violating this can
     /// lead to undefined behavior since the memory is freed after the call.
-    ///
+    /// 
     /// # Example
     ///
     /// ```rust
@@ -285,7 +296,13 @@ impl<T> FastMutex<T> {
     /// }
     /// ```
     pub unsafe fn to_owned_box(self) -> Box<T> {
-        let data_read = unsafe { ptr::read(&(*self.inner).data) };
+        let manually_dropped = ManuallyDrop::new(self);
+        let data_read = unsafe { ptr::read(&(*manually_dropped.inner).data) };
+        
+        // Free the mutex allocation without using drop semantics which could cause an
+        // accidental double drop of the underlying `T`.
+        unsafe { ExFreePool(manually_dropped.inner as _) };
+
         Box::new(data_read)
     }
 }
