@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"mod":["errors","fast_mutex","grt","kmutex"]};
+window.SIDEBAR_ITEMS = {};
