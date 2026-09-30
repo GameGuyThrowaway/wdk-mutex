@@ -2,10 +2,15 @@
 
 use core::{alloc::GlobalAlloc, ptr::null_mut};
 
-use wdk_sys::{
-    ntddk::{ExAllocatePool2, ExFreePool},
-    POOL_FLAG_NON_PAGED,
-};
+use wdk_sys::{ntddk::ExFreePool, _POOL_TYPE::NonPagedPoolNx, POOL_TYPE, PVOID, SIZE_T, ULONG};
+
+unsafe extern "C" {
+    pub(crate) fn ExAllocatePoolWithTag(
+        PoolType: POOL_TYPE,
+        NumberOfBytes: SIZE_T,
+        Tag: ULONG,
+    ) -> PVOID;
+}
 
 /// Memory allocator used by the crate.
 ///
@@ -18,7 +23,7 @@ const MEM_TAG_WDK_MUTEX: u32 = u32::from_le_bytes(*b"kmtx");
 unsafe impl GlobalAlloc for KMAlloc {
     unsafe fn alloc(&self, layout: core::alloc::Layout) -> *mut u8 {
         let ptr = unsafe {
-            ExAllocatePool2(POOL_FLAG_NON_PAGED, layout.size() as u64, MEM_TAG_WDK_MUTEX)
+            ExAllocatePoolWithTag(NonPagedPoolNx, layout.size() as u64, MEM_TAG_WDK_MUTEX)
         };
         if ptr.is_null() {
             return null_mut();

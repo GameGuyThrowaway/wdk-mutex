@@ -6,17 +6,17 @@ use core::{
 };
 use wdk_sys::{
     ntddk::{
-        ExAllocatePool2, ExFreePool, KeGetCurrentIrql, KeInitializeMutex, KeReleaseMutex,
+        ExFreePool, KeGetCurrentIrql, KeInitializeMutex, KeReleaseMutex,
         KeWaitForSingleObject,
     },
-    APC_LEVEL, DISPATCH_LEVEL, FALSE, KMUTEX, POOL_FLAG_NON_PAGED,
+    APC_LEVEL, DISPATCH_LEVEL, FALSE, KMUTEX, _POOL_TYPE::NonPagedPoolNx,
     _KWAIT_REASON::Executive,
     _MODE::KernelMode,
 };
 
 extern crate alloc;
 
-use crate::errors::DriverMutexError;
+use crate::{alloc::ExAllocatePoolWithTag, errors::DriverMutexError};
 /// A thread safe mutex implemented through acquiring a KMUTEX in the Windows kernel.
 ///
 /// The type `Kmutex<T>` provides mutually exclusive access to the inner type T allocated through
@@ -134,8 +134,8 @@ impl<T> KMutex<T> {
         //
         let total_sz_required = size_of::<KMutexInner<T>>();
         let inner_heap_ptr: *mut c_void = unsafe {
-            ExAllocatePool2(
-                POOL_FLAG_NON_PAGED,
+            ExAllocatePoolWithTag(
+                NonPagedPoolNx,
                 total_sz_required as u64,
                 u32::from_be_bytes(*b"kmtx"),
             )

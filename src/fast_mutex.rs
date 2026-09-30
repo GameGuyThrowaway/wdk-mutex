@@ -6,16 +6,16 @@ use core::{
 };
 use wdk_sys::{
     ntddk::{
-        ExAcquireFastMutex, ExAllocatePool2, ExFreePool, ExReleaseFastMutex, KeGetCurrentIrql,
+        ExAcquireFastMutex, ExFreePool, ExReleaseFastMutex, KeGetCurrentIrql,
         KeInitializeEvent,
     },
-    APC_LEVEL, DISPATCH_LEVEL, FALSE, FAST_MUTEX, FM_LOCK_BIT, POOL_FLAG_NON_PAGED,
+    APC_LEVEL, DISPATCH_LEVEL, FALSE, FAST_MUTEX, FM_LOCK_BIT, _POOL_TYPE::NonPagedPoolNx,
     _EVENT_TYPE::SynchronizationEvent,
 };
 
 extern crate alloc;
 
-use crate::errors::DriverMutexError;
+use crate::{alloc::ExAllocatePoolWithTag, errors::DriverMutexError};
 
 /// An internal binding for the ExInitializeFastMutex routine.
 ///
@@ -154,8 +154,8 @@ impl<T> FastMutex<T> {
         //
         let total_sz_required = size_of::<FastMutexInner<T>>();
         let inner_heap_ptr: *mut c_void = unsafe {
-            ExAllocatePool2(
-                POOL_FLAG_NON_PAGED,
+            ExAllocatePoolWithTag(
+                NonPagedPoolNx,
                 total_sz_required as u64,
                 u32::from_be_bytes(*b"kmtx"),
             )
